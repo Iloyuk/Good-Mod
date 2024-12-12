@@ -15,6 +15,8 @@ Contributors:
 - [Linux (it just makes doing things easier)](https://en.wikipedia.org/wiki/Linux)
 - [AzureAaron (fixed something in the readme)](https://github.com/AzureAaron)
 
+**Unfortunately, this project is currently unmaintained.** My computer is not slightly not working right now so I need to install a new operating system but I don't have time to do all that until winter break so maybe I will work on this at the end of winter break but most likely it will be unmaintained until some point in the spring semester
+
 **IMPORTANT VERSION 0.0.2-BETA INFORMATION**
 *This version does not use records of drops from Version 0.0.1-Beta.* All future versions will also not support your drops during Version 0.0.1-Beta. This is due to swapping both the location and the formatting of the drops.json file, the file where your drops are stored. The location is moved from your config folder to the goodmod subdirectory, which ensures compatability with other mods, and the reformatting is due to a rewrite of the config file management system, which makes the code understandable instead of whatever ChatGPT-powered mess I had before.
 
