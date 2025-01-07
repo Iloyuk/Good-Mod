@@ -13,6 +13,11 @@ object ItemDropParser {
     // Initialize the item drop patterns
     init {
         // Floor 7 items
+        itemDropPatterns["§5Shiny Necron's Handle"] = "§r§5Shiny Necron's Handles§r: "
+        itemDropPatterns["§6Shiny Wither Helmet"] = "§r§6Shiny Wither Helmets§r: "
+        itemDropPatterns["§6Shiny Wither Chestplate"] = "§r§6Shiny Wither Chestplates§r: "
+        itemDropPatterns["§6Shiny Wither Leggings"] = "§r§6Shiny Wither Leggings§r: "
+        itemDropPatterns["§6Shiny Wither Boots"] = "§r§6Shiny Wither Boots§r: "
         itemDropPatterns["§5Necron's Handle"] = "§r§5Necron's Handles§r: "
         itemDropPatterns["§5Implosion"] = "§r§5Implosions§r: "
         itemDropPatterns["§5Shadow Warp"] = "§r§5Shadow Warps§r: "
@@ -24,12 +29,13 @@ object ItemDropParser {
         itemDropPatterns["§6Wither Leggings"] = "§r§6Wither Leggings§r: "
         itemDropPatterns["§6Wither Boots"] = "§r§6Wither Boots§r: "
         itemDropPatterns["§6Auto Recombobulator"] = "§r§6Auto Recombs§r: "
+        itemDropPatterns["§5Wither Cloak Sword"] = "§r§5Wither Cloaks§r: "
         itemDropPatterns["§5Wither Blood"] = "§r§5Wither Bloods§r: "
         itemDropPatterns["§9Wither Catalyst"] = "§r§5Wither Catalysts§r: "
         itemDropPatterns["§5Precursor Gear"] = "§r§5Precursor Gears§r: "
-        itemDropPatterns["§aStorm The Fish"] = "§r§aStorm the Fish§r: "
-        itemDropPatterns["§aGoldor The Fish"] = "§r§aGoldor the Fish§r: "
-        itemDropPatterns["§aMaxor The Fish"] = "§r§aMaxor the Fish§r: "
+        itemDropPatterns["§cStorm the Fish"] = "§r§aStorm the Fish§r: "
+        itemDropPatterns["§cGoldor the Fish"] = "§r§aGoldor the Fish§r: "
+        itemDropPatterns["§cMaxor the Fish"] = "§r§aMaxor the Fish§r: "
         // Floor 6 items
         itemDropPatterns["§6Giant's Sword"] = "§r§6Giant's Swords§r: "
         itemDropPatterns["§6Precursor Eye"] = "§r§6Precursor Eyes§r: "
@@ -107,6 +113,7 @@ object ItemDropParser {
         itemDropPatterns["§9§d§lSoul Eater I"] = "§r§d§lSoul Eater I§r: "
         itemDropPatterns["§9§d§lSwarm I"] = "§r§d§lSwarm I§r: "
         itemDropPatterns["§9§d§lRend II"] = "§r§d§lRend II§r: "
+        itemDropPatterns["§9§d§lRend I"] = "§r§d§lRend I§r: "
         itemDropPatterns["§9§d§lLegion I"] = "§r§d§lLegion I§r: "
         itemDropPatterns["§9§d§lLast Stand II"] = "§r§d§lLast Stand II§r: "
         itemDropPatterns["§9§d§lLast Stand I"] = "§r§d§lLast Stand I§r: "
@@ -155,5 +162,9 @@ object ItemDropParser {
         }
         println("Config initiated, reloading now")
         dropsConfig.loadConfig()
+    }
+
+    fun getModifiedKeys(): List<String> {
+         return itemDropPatterns.keys.map { key -> key.substring(2) }
     }
 }

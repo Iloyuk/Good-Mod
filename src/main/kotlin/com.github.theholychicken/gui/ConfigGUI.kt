@@ -13,11 +13,18 @@ class ConfigGUI : GuiScreen() {
 
     override fun initGui() {
         super.initGui()
-        // Button for opening nya
+        // Button for opening items gui
         buttonList.add(
             GuiButton(
                 0, (this.width / 2) - 100, (this.height / 2) - 24,
                 buttonLabel
+            )
+        )
+        // toggles GuiConfig.useSellOffer
+        buttonList.add(
+            GuiButton(
+                1, (this.width / 2) - 100, (this.height / 2) + 2,
+                sellOffer
             )
         )
 
@@ -41,7 +48,15 @@ class ConfigGUI : GuiScreen() {
     }
 
     @Throws(IOException::class)
-    override fun actionPerformed(awa: GuiButton) {
+    override fun actionPerformed(button: GuiButton) {
+        when (button.id) {
+            0 -> {
+                ItemDropHUD.open()
+            }
+            1 -> {
+                GuiConfig.useSellOffer = !GuiConfig.useSellOffer
+            }
+        }
         ItemDropHUD.open()
     }
 
@@ -101,4 +116,11 @@ class ConfigGUI : GuiScreen() {
 
     private val buttonLabel: String
         get() = "stuff display"
+
+    private val sellOffer: String
+        get() = when {
+            GuiConfig.useSellOffer -> "Using sell offers"
+            !GuiConfig.useSellOffer -> "Using instasell"
+            else -> "Error initiating config"
+        }
 }

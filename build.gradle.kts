@@ -78,6 +78,11 @@ dependencies {
     minecraft("com.mojang:minecraft:1.8.9")
     mappings("de.oceanlabs.mcp:mcp_stable:22-1.8.9")
     forge("net.minecraftforge:forge:1.8.9-11.15.1.2318-1.8.9")
+    // coroutine and http request
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
+    // chatgpt said use this
+    //implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    shadowImpl("com.squareup.okhttp3:okhttp:4.12.0")
 
     shadowImpl(kotlin("stdlib-jdk8"))
 

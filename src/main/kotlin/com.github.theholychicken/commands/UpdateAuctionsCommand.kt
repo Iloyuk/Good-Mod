@@ -1,0 +1,44 @@
+package com.github.theholychicken.commands
+
+import com.github.theholychicken.GoodMod
+import com.github.theholychicken.config.GuiConfig
+import com.github.theholychicken.managers.AuctionParser
+import com.github.theholychicken.managers.HypixelApiClient
+import com.github.theholychicken.utils.modMessage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import net.minecraft.command.CommandBase
+import net.minecraft.command.CommandException
+import net.minecraft.command.ICommandSender
+
+class UpdateAuctionsCommand : CommandBase() {
+    override fun getCommandName(): String {
+        return GuiConfig.commandNames["updateAuctions"] ?: "updateAuctions"
+    }
+
+    override fun getCommandUsage(sender: ICommandSender): String {
+        return ""
+    }
+
+    @Throws(CommandException::class)
+    override fun processCommand(sender: ICommandSender, args: Array<String>) {
+        modMessage("Starting auction fetching protocol")
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                HypixelApiClient.fetchAllAuctions()
+            } catch (e: Exception) {
+                modMessage("Error found, §4§lplease report this")
+                GoodMod.logger.error(e.message)
+            }
+        }
+    }
+
+    override fun canCommandSenderUseCommand(sender: ICommandSender?): Boolean {
+        return true
+    }
+
+    override fun getCommandAliases(): List<String> {
+        return listOf("goodmod:updateAuctions")
+    }
+}

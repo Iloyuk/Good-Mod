@@ -3,12 +3,16 @@ package com.github.theholychicken.config
 import com.github.theholychicken.GoodMod.Companion.mc
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.sun.org.apache.xpath.internal.operations.Bool
 import java.io.File
 
 object GuiConfig {
     private val gson = GsonBuilder().setPrettyPrinting().create()
+    private val defaults = mutableListOf("useSellOffer", "goodmod", "getItems", "reloadLoot", "updateAuctions")
 
     var commandNames = mutableMapOf<String, String>()
+    var useSellOffer = false
+    var api: String = "HypixelApiClient"
 
     // .apply{} defines config file initiation protocol
     private val configFile = File(mc.mcDataDir, "config/goodmod/goodmod.json").apply {
@@ -16,7 +20,7 @@ object GuiConfig {
             parentFile.mkdirs()
             createNewFile()
         } catch (e: Exception) {
-            println("Error initializing personal bests config")
+            println("Error initializing config")
         }
     }
 
@@ -31,6 +35,14 @@ object GuiConfig {
                 )
                 println("Successfully loaded pb config $commandNames")
             }
+            // temporary fix to provide backwards compatability
+            if ("useSellOffer" !in commandNames.keys || "api" !in commandNames.keys) {
+                saveConfig()
+            }
+            useSellOffer = commandNames["useSellOffer"].toBoolean()
+            api = commandNames["api"].toString()
+            commandNames.remove("useSellOffer")
+            commandNames.remove("api")
         }  catch (e: Exception) {
             println(e.message)
         }
@@ -38,6 +50,8 @@ object GuiConfig {
 
     fun saveConfig() {
         try {
+            commandNames.put("useSellOffer", useSellOffer.toString())
+            commandNames.put("api", api)
             configFile.bufferedWriter().use {
                 it.write(gson.toJson(commandNames))
                 println("Successfully saved config")
@@ -51,6 +65,7 @@ object GuiConfig {
         commandNames["goodmod"] = "goodmod"
         commandNames["getItems"] = "getItems"
         commandNames["reloadLoot"] = "goodmod:dev_commands:furry"
+        commandNames["updateAuctions"] = "updateAuctions"
         saveConfig()
     }
 

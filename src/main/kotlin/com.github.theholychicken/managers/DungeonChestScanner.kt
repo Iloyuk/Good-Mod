@@ -2,6 +2,8 @@ package com.github.theholychicken.managers
 
 import com.github.theholychicken.GoodMod
 import com.github.theholychicken.GoodMod.Companion.mc
+import com.github.theholychicken.config.GuiConfig
+import com.github.theholychicken.gui.CroesusProfitHUD
 import com.github.theholychicken.managers.ChestLootParser.dumpCollectedItems
 import com.github.theholychicken.utils.modMessage
 import net.minecraft.client.gui.inventory.GuiChest
@@ -13,34 +15,53 @@ import net.minecraftforge.fml.common.gameevent.TickEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent
 import org.lwjgl.input.Mouse
 
+/**
+ * This object manages scanning for both croesus and dungeon chest instances.
+ * I should really write an external utils file to clean this up a lot.
+ */
 object DungeonChestScanner {
-    private var isScanning: Boolean = false
+    private var isScanningChest = false
     private var chestContainer: ContainerChest? = null
-    private var scanAttempts: Int = 0
-    private var isChestGuiOpen: Boolean = false
+    private var scanAttempts = 0
+    private var isChestGuiOpen = false
     private val chestLootParser: ChestLootParser = ChestLootParser
+    private val croesusChestParser: CroesusChestParser = CroesusChestParser
+    private var isCroesusGuiOpen = false
+    private var croesusProfitHUD = CroesusProfitHUD
+    var croesusIsParsed = false
 
     // Check for instance of DUNGEON_CHEST
     @SubscribeEvent
     fun onGuiOpen(event: GuiOpenEvent) {
-        val gui = event.gui as? GuiChest ?: return
-
-        if (isChestGuiOpen) {
-            isChestGuiOpen = false
+        if (event.gui == null) {
+            croesusIsParsed = false
             return
         }
+        val gui = event.gui as? GuiChest ?: return
+
+        //if (isChestGuiOpen) {
+        //    isChestGuiOpen = false
+        //    return
+        //}
+        // IDk how to make this work with croesus here too
 
         val container = gui.inventorySlots as? ContainerChest ?: return
         val chestName = container.lowerChestInventory.name
 
-        if (!CHEST_PATTERN.matches(chestName)) {
-            isChestGuiOpen = false
-            return
-        } else isChestGuiOpen = true
-
+        when {
+            CHEST_PATTERN.matches(chestName) -> {
+                isCroesusGuiOpen = false
+                isChestGuiOpen = true
+            }
+            CROESUS_PATTERN.matches(chestName) -> {
+                isCroesusGuiOpen = true
+                isChestGuiOpen = false
+            }
+            else -> return
+        }
 
         chestContainer = container
-        isScanning = true
+        isScanningChest = true
         scanAttempts = 0
     }
 
@@ -48,14 +69,15 @@ object DungeonChestScanner {
     @SubscribeEvent
     fun onClientTick(event: ClientTickEvent) {
         // Only execute during the END phase to avoid running twice per tick
-        if (event.phase != TickEvent.Phase.END || !isScanning || chestContainer == null) return
-        GoodMod.logger.info("[onClientTick] Scanning protocol active - awaiting fully loaded dungeon chest")
+        if (event.phase != TickEvent.Phase.END || !isScanningChest || chestContainer == null) return
+        GoodMod.logger.info("[onClientTick] Scanning protocol active - awaiting fully loaded gui")
 
         val currentScreen = mc.currentScreen
         if (currentScreen !is GuiChest) {
             stopScanning()
-            GoodMod.logger.info("[onClientTick] Chest closed, terminating scanning protocol")
+            GoodMod.logger.info("[onClientTick] Gui closed, terminating scanning protocol")
             isChestGuiOpen = false
+            isCroesusGuiOpen = false
             return
         } else chestContainer = currentScreen.inventorySlots as? ContainerChest ?: return
 
@@ -65,12 +87,18 @@ object DungeonChestScanner {
         val bottomRightStack = chestContainer?.lowerChestInventory?.getStackInSlot(bottomRightSlotIndex)
 
         if (bottomRightStack != null) {
-            GoodMod.logger.info("[onClientTick] Instance of DUNGEON_CHEST has been fully loaded, scanning protocol terminated")
-            isScanning = false
+            GoodMod.logger.info("[onClientTick] Gui instance has been fully loaded, scanning protocol terminated")
+            isScanningChest = false
             scanAttempts = 0
 
             chestContainer?.let {
-                chestLootParser.parseChestLoot(it)
+                if (isChestGuiOpen) {
+                    chestLootParser.parseChestLoot(it)
+                } else if (isCroesusGuiOpen) {
+                    AuctionParser.initFromFile()
+                    croesusChestParser.parseCroesusLoot(it)
+                    croesusIsParsed = true
+                }
             }
 
             chestContainer = null
@@ -81,8 +109,9 @@ object DungeonChestScanner {
         scanAttempts++
         if (scanAttempts > 200) {
             stopScanning()
-            modMessage("§r§4§lDungeon chest not loaded [timed out]. §r§bIs the server lagging?§r")
+            modMessage("§r§4§lGui was not fully loaded (timed out). §r§bIs the server lagging?§r")
             isChestGuiOpen = false
+            isCroesusGuiOpen = false
         }
     }
 
@@ -102,10 +131,11 @@ object DungeonChestScanner {
     }
 
     private fun stopScanning() {
-        isScanning = false
+        isScanningChest = false
         chestContainer = null
         scanAttempts = 0
     }
 
-    private val CHEST_PATTERN: Regex = Regex("(Wood|Gold|Diamond|Emerald|Obsidian|Bedrock) Chest")
+    private val CHEST_PATTERN = Regex("(Wood|Gold|Diamond|Emerald|Obsidian|Bedrock) Chest")
+    private val CROESUS_PATTERN = Regex("^(Master Mode )?The Catacombs - Flo(or (IV|V?I{0,3}))?$")
 }
