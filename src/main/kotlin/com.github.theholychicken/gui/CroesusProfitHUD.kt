@@ -13,7 +13,7 @@ import org.lwjgl.opengl.GL11
 object CroesusProfitHUD {
     private val mc = Minecraft.getMinecraft()
     private val slotPositions: List<Pair<Int, Int>> = (0 until 9).map {
-        Pair(8 + it * 18, 32)
+        Pair(8 + it * 18, 26) // I GOT THE HEIGHT CORRECT ON 1080P LETS GO
     }
 
     @SubscribeEvent
@@ -31,16 +31,16 @@ object CroesusProfitHUD {
             val rectY1 = height / 2 - chestHeight /2
             val rectY2 = rectY1 + chestHeight
 
-            val slot = CroesusChestParser.runLoot.maxBy {
+            val slot = CroesusChestParser.runLoot.maxByOrNull {
                 it.profit
-            }.index
-            val start = CroesusChestParser.runLoot.minOf { it.index }
+            }?.index ?: 0
+            //val start = CroesusChestParser.runLoot.minOf { it.index }
 
             val guiLeft = (width - 176) / 2
             val guiTop = (height - 166) / 2
 
-            val slotX = slotPositions.get(slot - start + 1).first + guiLeft
-            val slotY = slotPositions.get(slot - start + 1).second + guiTop
+            val slotX = slotPositions.get(slot - 9).first + guiLeft
+            val slotY = slotPositions.get(slot - 9).second + guiTop
 
             GuiScreen.drawRect(rectX1, rectY1, rectX2, rectY2, 0x80000000.toInt())
             mc.fontRendererObj.drawString("LOOT", rectX1 + chestWidth / 2 - mc.fontRendererObj.getStringWidth("LOOT") / 2, rectY1 + 10, 0x00FFFF)

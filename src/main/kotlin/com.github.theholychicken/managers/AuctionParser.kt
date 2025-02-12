@@ -20,6 +20,7 @@ import com.google.gson.reflect.TypeToken
  *  I need to check to figure out how this shit is actually working
  *  Tidy up any logical errors then see if i can clean up any code
  *  Render over max profit [WIP, renders one to the right but only sometimes?]
+ *  [ If 5 chests it renders correct, if 6 it renders 1 to the left. but im doing it with slot #s?]
  *  Implement COFL, Tricked
  *  Fix key calculations/reading
  *  Ensure spirit pet compatability
