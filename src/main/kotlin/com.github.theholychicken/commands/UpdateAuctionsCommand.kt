@@ -2,8 +2,7 @@ package com.github.theholychicken.commands
 
 import com.github.theholychicken.GoodMod
 import com.github.theholychicken.config.GuiConfig
-import com.github.theholychicken.managers.AuctionParser
-import com.github.theholychicken.managers.HypixelApiClient
+import com.github.theholychicken.managers.apiclients.HypixelApiClient
 import com.github.theholychicken.utils.modMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

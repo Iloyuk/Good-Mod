@@ -10,20 +10,36 @@ import com.google.gson.reflect.TypeToken
 
 /**
  * Object which contains parsed information about auction api pulls
+ * Should only be used for Hypixel Api pulls
  * @param auctionPrices contains current lowest ah prices, indexed by their name in itemDropPatterns minus the formatting stuff
  * @param items contains the list of unformatted items in itemDropPatterns
  * @param initFromFile pulls data from the saved file
  */
 /*
- * TODO - need to make a gui. So the gui should implement a scanning protocol, and after it terminates it should pull auctionPrices from file: AuctionParser.initFromFile()
- * TODO - Still need to implement [when to kismet] and [when to pull second chest] logic, latter should be easy
- * TODO - final step is to render over the gui with the optimal looting tasks. I should also write a gui renderer for the outside croesus menu to note which are looted and which arent. That one should be toggleable.
- * TODO - implement an option in the gui to select or deselect "useSellOffer" which is in GuiConfig
+ * TODO
+ *  I need to check to figure out how this shit is actually working
+ *  Tidy up any logical errors then see if i can clean up any code
+ *  Render over max profit [WIP, renders one to the right but only sometimes?]
+ *  Implement COFL, Tricked
+ *  Fix key calculations/reading
+ *  Ensure spirit pet compatability
+ *  Implement kismet logic and renders
+ *  Improve hud information
+ *  Impement custom no-skip items
+ *  Implement items to choose to sell offer, and items to choose to instasell
+ *  Implement items to choose to calc as combined books rather than uncombined
  */
 object AuctionParser {
     var auctionPrices: MutableMap<String, Double> = mutableMapOf()
-    private val items = ItemDropParser.getModifiedKeys()
-    private var bazaarItems = bazaarItems()
+    //private val items = ItemDropParser.getModifiedKeys()
+    var items = itemMap()
+    var shinyItems = mutableListOf<String>(
+        "Shiny Necron's Handle",
+        "Shiny Wither Helmet",
+        "Shiny Wither Chestplate",
+        "Shiny Wither Leggings",
+        "Shiny Wither Boots",
+    )
     private val gson: Gson = GsonBuilder().setPrettyPrinting().create()
 
     private val PRICES_FILE = File(mc.mcDataDir, "config/goodmod/prices.json").apply {
@@ -35,27 +51,33 @@ object AuctionParser {
     }
 
     // updates an entry as an auction thingy
-    fun updateAuction(item: String, price: Double) {
-        if (item !in items) return
+    fun updateAuction(item: String, price: Double, rarity: String = "") {
+        if (item !in items.values && item !in shinyItems) return
 
-        val auctionItemPrice = auctionPrices[item] ?: Double.MAX_VALUE
+        // have to check for spirit pet rarity
+        var itemName = item
+        if (rarity != "") {
+            if (rarity == "EPIC") {
+                itemName = "[Lvl 1] §6Spirit"
+            } else if (rarity == "LEGENDARY") {
+                itemName = "[Lvl 1] §5Spirit"
+            }
+        }
 
-        if ((item in auctionPrices.keys && price < auctionItemPrice) || item !in auctionPrices.keys)
-            auctionPrices[item] = price
+        val auctionItemPrice = auctionPrices[itemName] ?: Double.MAX_VALUE
+
+        if ((itemName in auctionPrices.keys && price < auctionItemPrice) || itemName !in auctionPrices.keys)
+            auctionPrices[itemName] = price
     }
 
     // updates an entry using bazaar data
     fun updateBazaar(item: String, price: Double) {
-        if (item !in bazaarItems.keys) return
+        if (item !in items.keys) return
 
-        val itemName = bazaarItems[item] ?: return
-
-        val bazaarItemPrice = auctionPrices[itemName] ?: Double.MAX_VALUE
+        val itemName = items[item] ?: return
 
         val multi = if (useSellOffer) 0.9875F else 1F
-        if ((itemName in auctionPrices && (price * multi) < bazaarItemPrice) || itemName !in auctionPrices) {
-            auctionPrices[itemName] = (price * multi)
-        }
+        auctionPrices[itemName] = (price * multi)
     }
 
     // saves to the file
@@ -85,29 +107,88 @@ object AuctionParser {
     }
 
     // this doesnt exist
-    private fun bazaarItems(): MutableMap<String, String> {
+    private fun itemMap(): MutableMap<String, String> {
         val list = mutableMapOf<String, String>()
+        // 7
         list["IMPLOSION_SCROLL"] = "Implosion"
         list["SHADOW_WARP_SCROLL"] = "Shadow Warp"
         list["WITHER_SHIELD_SCROLL"] = "Wither Shield"
+        list["DARK_CLAYMORE"] = "Dark Claymore"
+        list["DYE_NECRON"] = "Necron Dye"
+        list["WITHER_HELMET"] = "Wither Helmet"
+        list["WITHER_CHESTPLATE"] = "Wither Chestplate"
+        list["WITHER_LEGGINGS"] = "Wither Leggings"
+        list["WITHER_BOOTS"] = "Wither Boots"
+        list["AUTO_RECOMBOBULATOR"] = "Auto Recombobulator"
+        list["WITHER_CLOAK"] = "Wither Cloak Sword"
+        list["STORM_THE_FISH"] = "Storm the Fish"
+        list["GOLDOR_THE_FISH"] = "Goldor the Fish"
+        list["MAXOR_THE_FISH"] = "Maxor the Fish"
         list["WITHER_BLOOD"] = "Wither Blood"
         list["WITHER_CATALYST"] = "Wither Catalyst"
         list["PRECURSOR_GEAR"] = "Precursor Gear"
+        // 6
+        list["GIANTS_SWORD"] = "Giant's Sword"
+        list["PRECURSOR_EYE"] = "Precursor Eye"
+        list["FEL_SKULL"] = "Fel Skull"
+        list["SOULWEAVER_GLOVES"] = "Soulweaver Gloves"
+        list["SUMMONING_RING"] = "Summoning Ring"
+        list["NECROMANCER_LORD_HELMET"] = "Necromancer Lord Helmet"
+        list["NECROMANCER_LORD_CHESTPLATE"] = "Necromancer Lord Chestplate"
+        list["NECROMANCER_LORD_LEGGINGS"] = "Necromancer Lord Leggings"
+        list["NECROMANCER_LORD_BOOTS"] = "Necromancer Lord Boots"
+        list["NECROMANCER_SWORD"] = "Necromancer Sword"
         list["GIANT_TOOTH"] = "Giant Tooth"
         list["SADAN_BROOCH"] = "Sadan's Brooch"
+        // 5
+        list["SHADOW_FURY"] = "Shadow Fury"
+        list["LAST_BREATH"] = "Last Breath"
+        list["LIVID_DAGGER"] = "Livid Dagger"
+        list["SHADOW_ASSASSIN_HELMET"] = "Shadow Assassin Helmet"
+        list["SHADOW_ASSASSIN_CHESTPLATE"] = "Shadow Assassin Chestplate"
+        list["SHADOW_ASSASSIN_LEGGINGS"] = "Shadow Assassin Leggings"
+        list["SHADOW_ASSASSIN_BOOTS"] = "Shadow Assassin Boots"
+        list["SHADOW_ASSASSIN_CLOAK"] = "Shadow Assassin Cloak"
         list["AOTE_STONE"] = "Warped Stone"
         list["DARK_ORB"] = "Dark Orb"
+        // 4
+        list["PET-SPIRIT-LEGENDARY"] = "[Lvl 1] §6Spirit"
+        list["PET-SPIRIT-EPIC"] = "[Lvl 1] §5Spirit"
+        list["THORNS_BOOTS"] = "Spirit Boots"
+        list["ITEM_SPIRIT_BOW"] = "Spirit Bow"
+        list["SPIRIT_SWORD"] = "Spirit Sword"
         list["SPIRIT_WING"] = "Spirit Wing"
         list["SPIRIT_BONE"] = "Spirit Bone"
         list["SPIRIT_DECOY"] = "Spirit Stone"
+        // 3
         list["SUSPICIOUS_VIAL"] = "Suspicious Vial"
+        list["ADAPTIVE_HELMET"] = "Adaptive Helmet"
+        list["ADAPTIVE_CHESTPLATE"] = "Adaptive Chestplate"
+        list["ADAPTIVE_LEGGINGS"] = "Adaptive Leggings"
+        list["ADAPTIVE_BOOTS"] = "Adaptive Boots"
+        // 2
         list["RED_SCARF"] = "Red Scarf"
+        list["STONE_BLADE"] = "Adaptive Blade"
+        list["ADAPTIVE_BELT"] = "Adaptive Belt"
+        list["SCARF_STUDIES"] = "Scarf's Studies"
+        // 1
         list["RED_NOSE"] = "Red Nose"
+        list["BONZO_MASK"] = "Bonzo's Mask"
+        list["BONZO_STAFF"] = "Bonzo's Staff"
+        list["BALLOON_SNAKE"] = "Balloon Snake"
+        // stars
         list["FIFTH_MASTER_STAR"] = "Fifth Master Star"
         list["FOURTH_MASTER_STAR"] = "Fourth Master Star"
         list["THIRD_MASTER_STAR"] = "Third Master Star"
         list["SECOND_MASTER_STAR"] = "Second Master Star"
         list["FIRST_MASTER_STAR"] = "First Master Star"
+        // skulls
+        list["MASTER_SKULL_TIER_5"] = "Master Skull - Tier 5"
+        list["MASTER_SKULL_TIER_4"] = "Master Skull - Tier 4"
+        list["MASTER_SKULL_TIER_3"] = "Master Skull - Tier 3"
+        list["MASTER_SKULL_TIER_2"] = "Master Skull - Tier 2"
+        list["MASTER_SKULL_TIER_1"] = "Master Skull - Tier 1"
+        // books
         list["ENCHANTMENT_THUNDERLORD_7"] = "Thunderlord VII"
         list["ENCHANTMENT_OVERLOAD_1"] = "Overload I"
         list["ENCHANTMENT_REJUVENATE_3"] = "Rejuvenate III"
@@ -118,6 +199,7 @@ object AuctionParser {
         list["ENCHANTMENT_INFINITE_QUIVER_7"] = "Infinite Quiver VII"
         list["ENCHANTMENT_INFINITE_QUIVER_6"] = "Infinite Quiver VI"
         list["ENCHANTMENT_LETHALITY_6"] = "Lethality VI"
+        // ults
         list["ENCHANTMENT_ULTIMATE_ONE_FOR_ALL_1"] = "One For All I"
         list["ENCHANTMENT_ULTIMATE_SOUL_EATER_1"] = "Soul Eater I"
         list["ENCHANTMENT_ULTIMATE_SWARM_1"] = "Swarm I"
@@ -140,12 +222,15 @@ object AuctionParser {
         list["ENCHANTMENT_ULTIMATE_JERRY_3"] = "Ultimate Jerry III"
         list["ENCHANTMENT_ULTIMATE_JERRY_2"] = "Ultimate Jerry II"
         list["ENCHANTMENT_ULTIMATE_JERRY_1"] = "Ultimate Jerry I"
+        // unniversals
         list["RECOMBOBULATOR_3000"] = "Recombobulator 3000"
         list["FUMING_POTATO_BOOK"] = "Fuming Potato Book"
         list["HOT_POTATO_BOOK"] = "Hot Potato Book"
         list["NECROMANCER_BROOCH"] = "Necromancer's Brooch"
+        // essence
         list["ESSENCE_WITHER"] = "Wither Essence"
         list["ESSENCE_UNDEAD"] = "Undead Essence"
+        // chest key
         list["DUNGEON_CHEST_KEY"] = "Dungeon Chest Key"
         return list
     }

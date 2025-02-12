@@ -4,12 +4,17 @@ import com.github.theholychicken.managers.CroesusChestParser
 import com.github.theholychicken.managers.DungeonChestScanner
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiScreen
+import net.minecraft.client.gui.inventory.GuiChest
 import net.minecraft.util.ChatComponentText
 import net.minecraftforge.client.event.GuiScreenEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import org.lwjgl.opengl.GL11
 
 object CroesusProfitHUD {
     private val mc = Minecraft.getMinecraft()
+    private val slotPositions: List<Pair<Int, Int>> = (0 until 9).map {
+        Pair(8 + it * 18, 32)
+    }
 
     @SubscribeEvent
     fun onRenderGameOverlay(event: GuiScreenEvent.DrawScreenEvent.Post) {
@@ -25,6 +30,17 @@ object CroesusProfitHUD {
             val rectX2 = rectX1 + chestWidth
             val rectY1 = height / 2 - chestHeight /2
             val rectY2 = rectY1 + chestHeight
+
+            val slot = CroesusChestParser.runLoot.maxBy {
+                it.profit
+            }.index
+            val start = CroesusChestParser.runLoot.minOf { it.index }
+
+            val guiLeft = (width - 176) / 2
+            val guiTop = (height - 166) / 2
+
+            val slotX = slotPositions.get(slot - start + 1).first + guiLeft
+            val slotY = slotPositions.get(slot - start + 1).second + guiTop
 
             GuiScreen.drawRect(rectX1, rectY1, rectX2, rectY2, 0x80000000.toInt())
             mc.fontRendererObj.drawString("LOOT", rectX1 + chestWidth / 2 - mc.fontRendererObj.getStringWidth("LOOT") / 2, rectY1 + 10, 0x00FFFF)
@@ -42,6 +58,11 @@ object CroesusProfitHUD {
                         0x00FFFF
                     )
                 }
+
+            // draw over most profit
+            GL11.glDisable(GL11.GL_DEPTH_TEST)
+            GuiScreen.drawRect(slotX, slotY, slotX+16, slotY+16, 0x8000FF00.toInt())
+            GL11.glEnable(GL11.GL_DEPTH_TEST)
         }
     }
 

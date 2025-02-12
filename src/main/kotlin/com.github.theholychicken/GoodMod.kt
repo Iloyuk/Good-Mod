@@ -4,10 +4,7 @@ import com.github.theholychicken.commands.*
 import com.github.theholychicken.config.GuiConfig
 import com.github.theholychicken.gui.CroesusProfitHUD
 import com.github.theholychicken.managers.*
-import com.github.theholychicken.utils.modMessage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.Dispatchers
+import com.github.theholychicken.managers.apiclients.HypixelApiClient
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiScreen
 import net.minecraftforge.client.ClientCommandHandler

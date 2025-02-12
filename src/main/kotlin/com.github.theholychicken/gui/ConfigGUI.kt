@@ -2,6 +2,7 @@ package com.github.theholychicken.gui
 
 import com.github.theholychicken.GoodMod
 import com.github.theholychicken.config.GuiConfig
+import com.github.theholychicken.gui.utils.DropdownMenu
 import com.github.theholychicken.utils.modMessage
 import net.minecraft.client.gui.*
 import org.lwjgl.input.Keyboard
@@ -10,6 +11,18 @@ import java.io.IOException
 class ConfigGUI : GuiScreen() {
     private var getItemsNameField: GuiTextField? = null
     private var openGuiNameField: GuiTextField? = null
+    private lateinit var dropdownMenu: DropdownMenu
+    private var apis = mutableListOf(
+        "Hypixel API" to {GuiConfig.api = "HypixelApi" },
+        "Cofl API" to { GuiConfig.api = "CoflApi" },
+        "Skytils API" to { GuiConfig.api = "TrickedApi" }
+    )
+    private val selected = when {
+        GuiConfig.api == "HypixelApi" -> 0
+        GuiConfig.api == "CoflApi" -> 1
+        GuiConfig.api == "TrickedApi" -> 2
+        else -> 0
+    }
 
     override fun initGui() {
         super.initGui()
@@ -39,6 +52,10 @@ class ConfigGUI : GuiScreen() {
         openGuiNameField?.isFocused = true
         openGuiNameField?.enableBackgroundDrawing = true
         openGuiNameField?.text = GuiConfig.commandNames["goodmod"]
+
+        // Dropdown menu for api endpoints
+        dropdownMenu = DropdownMenu((this.width / 2) - 100, (this.height / 2) + 26, 200, apis, selected)
+        dropdownMenu.initButtons(buttonList)
     }
 
     override fun updateScreen() {
@@ -50,14 +67,21 @@ class ConfigGUI : GuiScreen() {
     @Throws(IOException::class)
     override fun actionPerformed(button: GuiButton) {
         when (button.id) {
-            0 -> {
-                ItemDropHUD.open()
-            }
+            0 -> ItemDropHUD.open()
             1 -> {
                 GuiConfig.useSellOffer = !GuiConfig.useSellOffer
+                GuiConfig.saveConfig()
+                GuiConfig.loadConfig()
+                button.displayString = sellOffer
+            }
+            in 100..(100 + apis.size) -> {
+                dropdownMenu.handleButtonClick(button)
+                dropdownMenu.updateDropdownLabel(buttonList)
+                GuiConfig.saveConfig()
+                GuiConfig.loadConfig()
+                if (button.id > 100)  modMessage("You have activated the ${apis[button.id - 101].first}!")
             }
         }
-        ItemDropHUD.open()
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
@@ -108,6 +132,22 @@ class ConfigGUI : GuiScreen() {
     override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
         super.mouseClicked(mouseX, mouseY, mouseButton)
         getItemsNameField?.mouseClicked(mouseX, mouseY, mouseButton)
+        if (dropdownMenu.expanded && !isMouseOverDropdown(mouseX, mouseY)) {
+            dropdownMenu.closeDropdown()
+        }
+    }
+
+    private fun isMouseOverDropdown(mouseX: Int, mouseY: Int): Boolean {
+        val dropdownHeight = if (dropdownMenu.expanded) {
+            (dropdownMenu.options.size + 1) * 20
+        } else {
+            20
+        }
+
+        return mouseX >= dropdownMenu.x &&
+                mouseX <= dropdownMenu.x + dropdownMenu.width &&
+                mouseY >= dropdownMenu.y &&
+                mouseY <= dropdownMenu.y + dropdownHeight
     }
 
     override fun doesGuiPauseGame(): Boolean {

@@ -1,17 +1,14 @@
-package com.github.theholychicken.managers
+package com.github.theholychicken.managers.apiclients
 
 import com.github.theholychicken.GoodMod
 import com.github.theholychicken.config.GuiConfig.useSellOffer
+import com.github.theholychicken.managers.AuctionParser
 import com.github.theholychicken.utils.modMessage
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okio.IOException
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -20,7 +17,6 @@ import java.util.concurrent.TimeUnit
  * @property fetchAllAuctions searches every auction and calls AuctionParser.updateAuction on each one if bin
  */
 object HypixelApiClient {
-    private val httpClient = OkHttpClient()
     private val gson = Gson()
     private var key = getKey()
     val executor = Executors.newSingleThreadScheduledExecutor()
@@ -69,7 +65,12 @@ object HypixelApiClient {
                 if (auction.asJsonObject.get("bin").asBoolean) {
                     val itemName = auction.asJsonObject.get("item_name").asString
                     val price = auction.asJsonObject.get("starting_bid").asDouble
-                    AuctionParser.updateAuction(itemName, price)
+                    if (itemName == "[Lvl 1] Spirit") {
+                        AuctionParser.updateAuction(itemName, price,
+                            auction.asJsonObject.get("tier").asString)
+                    } else {
+                        AuctionParser.updateAuction(itemName, price)
+                    }
                 }
             }
 
@@ -106,30 +107,10 @@ object HypixelApiClient {
     }
 
     private fun fetchPage(page: Int): String {
-        val request = Request.Builder()
-            .url("https://api.hypixel.net/v2/skyblock/auctions?page=$page")
-            .build()
-
-        httpClient.newCall(request).execute().use { response ->
-            if (!response.isSuccessful) {
-                throw IOException("Failed to fetch auctions on page $page")
-                modMessage("Failed to fetch auctions on page $page. Please manually retry fetching auctions with /goodmod:dev:updateauctions.")
-            }
-            return response.body?.string() ?: throw IOException("Empty response on page $page")
-        }
+        return HttpClient.sendRequest("https://api.hypixel.net/v2/skyblock/auctions?page=$page")
     }
 
     private fun fetchBazaar(): String {
-        val request = Request.Builder()
-            .url("https://api.hypixel.net/v2/skyblock/bazaar")
-            .build()
-
-        httpClient.newCall(request).execute().use { response ->
-            if (!response.isSuccessful) {
-                throw IOException("Failed to load bazaar data.")
-                modMessage("Failed to properly load bazaar data. Please manually try fetching data with /goodmod:dev:updateauctions.")
-            }
-            return response.body?.string() ?: throw IOException("Empty bazaar response")
-        }
+        return HttpClient.sendRequest("https://api.hypixel.net/v2/skyblock/bazaar")
     }
 }

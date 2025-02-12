@@ -12,7 +12,7 @@ object GuiConfig {
 
     var commandNames = mutableMapOf<String, String>()
     var useSellOffer = false
-    var api: String = "HypixelApiClient"
+    var api: String = "HypixelApi"
 
     // .apply{} defines config file initiation protocol
     private val configFile = File(mc.mcDataDir, "config/goodmod/goodmod.json").apply {
