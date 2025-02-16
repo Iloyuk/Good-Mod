@@ -155,7 +155,8 @@ object AuctionParser {
         list["PET-SPIRIT-LEGENDARY"] = "[Lvl 1] §6Spirit"
         list["PET-SPIRIT-EPIC"] = "[Lvl 1] §5Spirit"
         list["THORNS_BOOTS"] = "Spirit Boots"
-        list["ITEM_SPIRIT_BOW"] = "Spirit Bow"
+        list["ITEM_SPIRIT_BOW"] = "Spirit Shortbow" // this one doesnt work
+        // trying Spirit Bow -> Spirit Shortbow, i think thatll fix it?
         list["SPIRIT_SWORD"] = "Spirit Sword"
         list["SPIRIT_WING"] = "Spirit Wing"
         list["SPIRIT_BONE"] = "Spirit Bone"

@@ -19,6 +19,7 @@ object CroesusProfitHUD {
     @SubscribeEvent
     fun onRenderGameOverlay(event: GuiScreenEvent.DrawScreenEvent.Post) {
         if (DungeonChestScanner.croesusIsParsed) {
+            if (CroesusChestParser.runLoot.isEmpty()) return
             var scale = mc.gameSettings.guiScale
             var width = mc.displayWidth / scale
             var height = mc.displayHeight / scale
@@ -34,7 +35,6 @@ object CroesusProfitHUD {
             val slot = CroesusChestParser.runLoot.maxByOrNull {
                 it.profit
             }?.index ?: 0
-            //val start = CroesusChestParser.runLoot.minOf { it.index }
 
             val guiLeft = (width - 176) / 2
             val guiTop = (height - 166) / 2
@@ -91,7 +91,9 @@ object CroesusProfitHUD {
             }
         }
     }
+
     /*
+    // Debug method
     fun sendLootChat() {
         CroesusChestParser.runLoot
             .filter { !it.purchased }
@@ -109,6 +111,7 @@ object CroesusProfitHUD {
     }
      */
 
+    // different methods for different rendering logic
     fun renderProfitChestKey(x: Int, y: Int, x2: Int, y2: Int) {
         GL11.glDisable(GL11.GL_DEPTH_TEST)
         GuiScreen.drawRect(x, y, x+16, y+16, 0x8000FF00.toInt())

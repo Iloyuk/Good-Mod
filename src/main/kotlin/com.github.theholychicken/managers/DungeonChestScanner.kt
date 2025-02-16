@@ -27,7 +27,8 @@ object DungeonChestScanner {
     private val chestLootParser: ChestLootParser = ChestLootParser
     private val croesusChestParser: CroesusChestParser = CroesusChestParser
     private var isCroesusGuiOpen = false
-    private var croesusProfitHUD = CroesusProfitHUD
+    //private var croesusProfitHUD = CroesusProfitHUD
+    // testing if this can be removed i mean its grayed out so
     var croesusIsParsed = false
 
     // Check for instance of DUNGEON_CHEST
@@ -44,19 +45,20 @@ object DungeonChestScanner {
         //    return
         //}
         // IDk how to make this work with croesus here too
+        // what  did this even do?
 
         val container = gui.inventorySlots as? ContainerChest ?: return
         val chestName = container.lowerChestInventory.name
 
+        // reset variables on each gui switch just to make sure we dont
+        // get any rendering errors
+        isCroesusGuiOpen = false
+        isChestGuiOpen = false
+        croesusIsParsed = false
+
         when {
-            CHEST_PATTERN.matches(chestName) -> {
-                isCroesusGuiOpen = false
-                isChestGuiOpen = true
-            }
-            CROESUS_PATTERN.matches(chestName) -> {
-                isCroesusGuiOpen = true
-                isChestGuiOpen = false
-            }
+            CHEST_PATTERN.matches(chestName) -> isChestGuiOpen = true
+            CROESUS_PATTERN.matches(chestName) -> isCroesusGuiOpen = true
             else -> return
         }
 
