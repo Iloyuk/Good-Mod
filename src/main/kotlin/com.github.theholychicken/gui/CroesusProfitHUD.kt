@@ -14,9 +14,6 @@ import java.lang.reflect.Field
 
 object CroesusProfitHUD {
     private val mc = Minecraft.getMinecraft()
-    private val slotPositions: List<Pair<Int, Int>> = (0 until 9).map {
-        Pair(8 + it * 18, 26) // I GOT THE HEIGHT CORRECT ON 1080P LETS GO
-    }
 
     @SubscribeEvent
     fun onRenderGameOverlay(event: GuiScreenEvent.DrawScreenEvent.Post) {

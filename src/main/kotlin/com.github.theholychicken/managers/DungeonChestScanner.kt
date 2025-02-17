@@ -2,8 +2,6 @@ package com.github.theholychicken.managers
 
 import com.github.theholychicken.GoodMod
 import com.github.theholychicken.GoodMod.Companion.mc
-import com.github.theholychicken.config.GuiConfig
-import com.github.theholychicken.gui.CroesusProfitHUD
 import com.github.theholychicken.managers.ChestLootParser.dumpCollectedItems
 import com.github.theholychicken.utils.modMessage
 import net.minecraft.client.gui.inventory.GuiChest

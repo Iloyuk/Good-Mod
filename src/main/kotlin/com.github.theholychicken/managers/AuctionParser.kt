@@ -33,7 +33,7 @@ object AuctionParser {
     var auctionPrices: MutableMap<String, Double> = mutableMapOf()
     //private val items = ItemDropParser.getModifiedKeys()
     var items = itemMap()
-    var shinyItems = mutableListOf<String>(
+    var shinyItems = mutableListOf(
         "Shiny Necron's Handle",
         "Shiny Wither Helmet",
         "Shiny Wither Chestplate",

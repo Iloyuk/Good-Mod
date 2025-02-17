@@ -3,7 +3,6 @@ package com.github.theholychicken.gui
 import com.github.theholychicken.managers.DungeonChestScanner
 import com.github.theholychicken.managers.MainCroesusGuiParser
 import com.github.theholychicken.utils.modMessage
-import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.gui.inventory.GuiChest
 import net.minecraft.client.gui.inventory.GuiContainer
@@ -13,7 +12,6 @@ import org.lwjgl.opengl.GL11
 import java.lang.reflect.Field
 
 object MainCroesusHUD {
-    private val mc = Minecraft.getMinecraft()
     private var guiLeft = 0
     private var guiTop = 0
 

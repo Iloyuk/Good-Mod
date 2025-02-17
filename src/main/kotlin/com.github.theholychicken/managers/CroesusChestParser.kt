@@ -47,12 +47,14 @@ object CroesusChestParser {
             val location = Pair(chest.inventorySlots[index].xDisplayPosition, chest.inventorySlots[index].yDisplayPosition)
 
             if (costIndex != null) {
-                val chestCost = findCost(chestLoot, costIndex ?: continue)
+                val chestCost = findCost(chestLoot, costIndex)
                 runLoot.add(CroesusChest(displayName, lootSubList, false, chestCost, location))
             } else {
                 runLoot.add(CroesusChest(displayName, lootSubList, true, 0.00, location))
                 purchasedChest = displayName
             }
+
+            setKeyStatus()
         }
     }
 
@@ -109,7 +111,7 @@ object CroesusChestParser {
         return cost.toDouble()
     }
 
-    private fun setKeyStatus(tagList: NBTTagList) {
+    private fun setKeyStatus() {
         if (openStatus) return // quit if chest alr opened
 
         val secondMostProfit: Double = runLoot
