@@ -36,7 +36,8 @@ object MainCroesusHUD {
                 }
             }
 
-            GL11.glDisable(GL11.GL_DEPTH_TEST)
+            GL11.glPushMatrix()
+            GL11.glTranslated(0.0, 0.0, 10.0)
             MainCroesusGuiParser.openedChests.forEach { (pair, s) ->
                 val x = pair.first + guiLeft
                 val y = pair.second + guiTop
@@ -54,7 +55,7 @@ object MainCroesusHUD {
                     }
                 }
             }
-            GL11.glEnable(GL11.GL_DEPTH_TEST)
+            GL11.glPopMatrix()
         }
     }
 }

@@ -84,7 +84,8 @@ object CroesusProfitHUD {
                     )
                 }
 
-            GL11.glDisable(GL11.GL_DEPTH_TEST)
+            GL11.glPushMatrix()
+            GL11.glTranslated(0.0, 0.0, 10.0)
             if (CroesusChestParser.keyStatus) {
                 val slot2 = CroesusChestParser
                     .runLoot
@@ -96,9 +97,14 @@ object CroesusProfitHUD {
                     val slotY2 = slot2.second + guiTop
                     GuiScreen.drawRect(slotX2, slotY2, slotX2 + 16, slotY2 + 16, 0x80E4D0AA.toInt())
                 }
+            } else if (CroesusChestParser.openStatus) {
+                if (CroesusChestParser.runLoot.maxBy { it.profit }.profit > 0) {
+                    GuiScreen.drawRect(slotX, slotY, slotX + 16, slotY + 16, 0x8000FF00.toInt())
+                }
+            } else {
+                GuiScreen.drawRect(slotX, slotY, slotX + 16, slotY + 16, 0x8000FF00.toInt())
             }
-            GuiScreen.drawRect(slotX, slotY, slotX + 16, slotY + 16, 0x8000FF00.toInt())
-            GL11.glEnable(GL11.GL_DEPTH_TEST)
+            GL11.glPopMatrix()
         }
     }
 

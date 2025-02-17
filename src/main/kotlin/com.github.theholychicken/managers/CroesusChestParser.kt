@@ -16,9 +16,9 @@ object CroesusChestParser {
     private val GLASS_REGEX = Regex("1xtile.thinStainedGlass@\\d+$")
     private var purchasedChest = ""
     val runLoot = mutableListOf<CroesusChest>()
-    private val dungeonChestKeyPrice = AuctionParser.auctionPrices["Dungeon Chest Key"] ?: 0.00
+    var dungeonChestKeyPrice = AuctionParser.auctionPrices["Dungeon Chest Key"] ?: 0.00
     var keyStatus: Boolean = false // slightly misleading name, true if should use key
-    private var openStatus: Boolean = false
+    var openStatus: Boolean = false
 
 
     // Process croesus instance
@@ -26,6 +26,7 @@ object CroesusChestParser {
         runLoot.clear()
         keyStatus = false
         openStatus = false
+        dungeonChestKeyPrice = AuctionParser.auctionPrices["Dungeon Chest Key"] ?: 0.0
 
         // Chests occur 10-16, and I grab the glass at the edges as well just in case
         for (index in 9..17) {
@@ -43,7 +44,6 @@ object CroesusChestParser {
                 .first { chestLoot.getStringTagAt(it) == "" }
 
             val lootSubList = subList(chestLoot, 1, endLootIndex)
-
             val location = Pair(chest.inventorySlots[index].xDisplayPosition, chest.inventorySlots[index].yDisplayPosition)
 
             if (costIndex != null) {
@@ -104,13 +104,13 @@ object CroesusChestParser {
                 openStatus = true
                 firstLine.substring(2, endIndex).replace(",", "").toDouble() + dungeonChestKeyPrice
             }
-            else -> 10
+            else -> 0
         }
         return cost.toDouble()
     }
 
     private fun setKeyStatus(tagList: NBTTagList) {
-        if (!openStatus) return // quit if chest not alr opened
+        if (openStatus) return // quit if chest alr opened
 
         val secondMostProfit: Double = runLoot
             .sortedByDescending { it.profit }
