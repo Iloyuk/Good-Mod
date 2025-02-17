@@ -1,21 +1,20 @@
-<h1>good mod</h1>
+<h1 align="center">good mod</h1>
 
 a good mod
 
-Contributors:
+**Contributors:**
 - [TheHolyChickn (main developer)](https://github.com/TheHolyChickn/)
 - [odtheking (refactored the entire project in kotlin with normal names/struture)](https://github.com/odtheking)
 - [bonsai (made the STUPID GUI WORK)](https://github.com/freebonsai)
+- [Iloyuk (fixed the code more times than  can count)](https://github.com/Iloyuk)
 - [AzuredBlue (told me to google something)](https://github.com/AzuredBlue)
 - [this tutorial and template odtheking told me to ~~steal~~ look at (u guys rlly thought i could set this all up on my own with no past experience??? lolllll)](https://moddev.nea.moe/)
 - litdab (gave me advice i didnt listen to then gave me more advice)
-- [ChatGPT (all of the code)](https://chatgpt.com/)
+- [ChatGPT (the main developer)](https://chatgpt.com/)
 - kikias22 (artist)
 - [Intellij Idea (nvim still better)](https://www.jetbrains.com/idea/)
 - [Linux (it just makes doing things easier)](https://en.wikipedia.org/wiki/Linux)
 - [AzureAaron (fixed something in the readme)](https://github.com/AzureAaron)
-
-**Unfortunately, this project is currently unmaintained.** My computer is not slightly not working right now so I need to install a new operating system but I don't have time to do all that until winter break so maybe I will work on this at the end of winter break but most likely it will be unmaintained until some point in the spring semester
 
 **IMPORTANT VERSION 0.0.2-BETA INFORMATION**
 *This version does not use records of drops from Version 0.0.1-Beta.* All future versions will also not support your drops during Version 0.0.1-Beta. This is due to swapping both the location and the formatting of the drops.json file, the file where your drops are stored. The location is moved from your config folder to the goodmod subdirectory, which ensures compatability with other mods, and the reformatting is due to a rewrite of the config file management system, which makes the code understandable instead of whatever ChatGPT-powered mess I had before.
@@ -27,11 +26,22 @@ I intend on in the future implementing an (optional) log-scanning function, whic
 <h2><font color=#00FF99>Features</font></h2>
 good mod offers two features I've wanted for a long time, but are not present in <a href="https://github.com/Skytils/SkytilsMod/tree/dev">Skytils</a> or <a href="https://skyblockextras.com/">SBE</a>.
 
-1. **Dungeon Drops Tracker**<p>
-<a href="https://skyblockextras.com/">SBE</a> actually has this option, but it's extremely outdated and randomly resets itself sometimes. This solution has both a GUI and a chat command element. At some point I will make a good Croesus scanner too because honestly it's not hard.</p>
-
-2. **Hoppity Reminder** (THIS FEATURE IS NOT YET AVAILABLE)<p>
-I have lost way too many eggs due to being in a dungeon run and just forgetting about Hoppity. This solution creates an impossible to miss Hoppity alert, and also has the option to automatically send <tt>!dt Hoppity</tt> in chat.
+1. **Good Profit Calculator (WIP)**<p>
+All the profit calculators are kinda horrible, so I am working on my own. My solution is extremely customizable, from allowing you to select the specific API you want to use for profit calculation, all the way to allowing you to select which items to calculate as instasell, and which to calculate as instabuy. Features include:
+    - Croesus Gui Highlights
+      - Highlights unopened chests in green, opened (but still keyable) chests in gray, and keyed/not openable chests in black
+      - *(WIP) A future release* will allow Colors to be customizable
+      - *(WIP) A future release* will implement an option to use the Hypixel API to scan all of your Croesus chests before you even open them, allowing the mod to more intelligently highlighty what chests to open (eg: only highlighting in gray the chests you should use a key on, instead of all chests that are possible to use a key on)
+    - Croesus Chest Highlights
+      - Highlights the most profitable chest in green
+      - If you haven't opened a chest yet and the second most profitable chest is profitable enough that using a chest key is profit, it will also be highlighted in gray
+      - *(WIP) A future release* will implement kismet logic, meaning if using a kismet on the bedrock chest yields a positive EV (the average profit is greater than 0), it will be highlighted in a different color (blue maybe?)
+      - *(WIP) A future release* will implement per-item selection of sell offer or instasell usage, meaning instead of making ALL of your items use either instasell or sell offer prices, you can choose specific items to use one of them and specific items to use the other (eg: Recombs use sell offer prices, but all enchanted books use instasell prices except for Legion, etc.)
+      - *(WIP) A future release* will implement multiple options for the API used to calculate profit. Currently, only the Hypixel API works, but the config GUI has options **that I will eventually make functional** for using the <a href="https://api.hypixel.net/">Hypixel</a> API, <a href="https://sky.coflnet.com/api/index.html">COFL</a> API, and the <a href="https://github.com/Tricked-dev/lowestbins">API that Skytils uses</a>, which is developed and hosted by <a href="https://github.com/Tricked-dev">Tricked dev</a>. The API selection will default to the Hypixel API to avoid putting excessive strain on any third party API. If you would like me to add another API, please open an issue and I will decide whether to add it or not
+    - *(WIP)* Dungeon Chest Profit Display
+      - Not complete yet, but will mimic the SBE profit display when complete</p>
+2. **Dungeon Drops Tracker**<p>
+<a href="https://skyblockextras.com/">SBE</a> actually has this option, but it's extremely outdated and randomly resets itself sometimes. This solution has both a GUI and a chat command element.</p>
 
 In the future, I may implement anti-ironman dark auction alerts, so you can outbid any time an ironman player is winning in the dark auction.
 

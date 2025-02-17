@@ -103,13 +103,13 @@ class ConfigGUI : GuiScreen() {
 
         // Draws owoCommand input field
         drawCenteredString(
-            this.fontRendererObj, "set /nicepb alias",
+            this.fontRendererObj, "set /goodmod alias",
             this.width / 2 + 150,
             this.height / 2 - 70, 0x00FFFF
         )
         getItemsNameField?.drawTextBox()
 
-        drawCenteredString(this.fontRendererObj, "set /owo alias", this.width / 2 + 150, this.height / 2 - 45, 0x00FFFF)
+        drawCenteredString(this.fontRendererObj, "set /getItems alias", this.width / 2 + 150, this.height / 2 - 45, 0x00FFFF)
         openGuiNameField?.drawTextBox()
 
         // Draws buttons
