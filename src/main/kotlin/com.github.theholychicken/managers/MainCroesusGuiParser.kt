@@ -4,7 +4,7 @@ import net.minecraft.inventory.ContainerChest
 import net.minecraft.nbt.NBTTagString
 
 object MainCroesusGuiParser {
-    val openedChests: MutableMap<Pair<Int, Int>, String> = mutableMapOf()
+    val openedChests: MutableMap<Pair<Int, Int>, Int> = mutableMapOf()
 
     fun parseCroesusMenu(chest: ContainerChest) {
         openedChests.clear()
@@ -21,10 +21,15 @@ object MainCroesusGuiParser {
 
             val display = Pair(chest.inventorySlots[index].xDisplayPosition, chest.inventorySlots[index].yDisplayPosition)
 
+            /*
+            Completely opened chests are marked with a 0
+            Opened but keyable chests are marked with a 1
+            Unopened chests are marked with a 2
+             */
             when {
-                chestInfo.getStringTagAt(completedIndex + 1) == "§aNo more Chests to open!" -> openedChests[display] = "c"
-                chestInfo.getStringTagAt(completedIndex + 2) == "§8No Chests Opened!" -> openedChests[display] = "u"
-                chestInfo.getStringTagAt(completedIndex + 2).matches(Regex("^§8Opened Chest: (Wood|Gold|Diamond|Emerald|Obsidian|Bedrock)$")) -> openedChests[display] = "h"
+                chestInfo.getStringTagAt(completedIndex + 1) == "§aNo more Chests to open!" -> openedChests[display] = 0
+                chestInfo.getStringTagAt(completedIndex + 2) == "§8No Chests Opened!" -> openedChests[display] = 2
+                chestInfo.getStringTagAt(completedIndex + 2).matches(Regex("^§8Opened Chest: (Wood|Gold|Diamond|Emerald|Obsidian|Bedrock)$")) -> openedChests[display] = 1
             }
         }
     }

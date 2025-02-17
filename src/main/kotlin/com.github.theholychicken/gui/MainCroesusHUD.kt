@@ -40,15 +40,15 @@ object MainCroesusHUD {
                 val x = pair.first + guiLeft
                 val y = pair.second + guiTop
                 when (s) {
-                    "c" -> {
+                    0 -> {
                         GuiScreen.drawRect(x, y, x + 16, y + 16, 0x80000000.toInt())
                     }
 
-                    "u" -> {
+                    2 -> {
                         GuiScreen.drawRect(x, y, x + 16, y + 16, 0x8000FF00.toInt())
                     }
 
-                    "h" -> {
+                    1 -> {
                         GuiScreen.drawRect(x, y, x + 16, y + 16, 0x80E4D0AA.toInt())
                     }
                 }

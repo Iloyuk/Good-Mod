@@ -2,6 +2,7 @@ package com.github.theholychicken.managers
 
 import com.github.theholychicken.GoodMod
 import com.github.theholychicken.GoodMod.Companion.mc
+import com.github.theholychicken.config.GuiConfig
 import com.github.theholychicken.managers.ChestLootParser.dumpCollectedItems
 import com.github.theholychicken.utils.modMessage
 import net.minecraft.client.gui.inventory.GuiChest
@@ -61,7 +62,7 @@ object DungeonChestScanner {
         when {
             CHEST_PATTERN.matches(chestName) -> isChestGuiOpen = true
             CROESUS_PATTERN.matches(chestName) -> isCroesusGuiOpen = true
-            chestName == "Croesus" -> isMainCroesusGuiOpen = true
+            chestName == "Croesus" && GuiConfig.renderMainCroesusGui -> isMainCroesusGuiOpen = true
             else -> return
         }
 

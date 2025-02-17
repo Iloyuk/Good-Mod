@@ -13,6 +13,7 @@ object GuiConfig {
     var commandNames = mutableMapOf<String, String>()
     var useSellOffer = false
     var api: String = "HypixelApi"
+    var renderMainCroesusGui = true
 
     // .apply{} defines config file initiation protocol
     private val configFile = File(mc.mcDataDir, "config/goodmod/goodmod.json").apply {
@@ -36,13 +37,15 @@ object GuiConfig {
                 println("Successfully loaded pb config $commandNames")
             }
             // temporary fix to provide backwards compatability
-            if ("useSellOffer" !in commandNames.keys || "api" !in commandNames.keys) {
+            if ("useSellOffer" !in commandNames.keys || "api" !in commandNames.keys || "renderMainCroesusGui" !in commandNames.keys) {
                 saveConfig()
             }
             useSellOffer = commandNames["useSellOffer"].toBoolean()
             api = commandNames["api"].toString()
+            renderMainCroesusGui = commandNames["renderMainCroesusGui"].toBoolean()
             commandNames.remove("useSellOffer")
             commandNames.remove("api")
+            commandNames.remove("renderMainCroesusGui")
         }  catch (e: Exception) {
             println(e.message)
         }
@@ -52,6 +55,7 @@ object GuiConfig {
         try {
             commandNames.put("useSellOffer", useSellOffer.toString())
             commandNames.put("api", api)
+            commandNames.put("renderMainCroesusGui", renderMainCroesusGui.toString())
             configFile.bufferedWriter().use {
                 it.write(gson.toJson(commandNames))
                 println("Successfully saved config")

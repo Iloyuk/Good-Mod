@@ -29,14 +29,20 @@ class ConfigGUI : GuiScreen() {
         // Button for opening items gui
         buttonList.add(
             GuiButton(
-                0, (this.width / 2) - 100, (this.height / 2) - 24,
+                2, (this.width / 2) - 100, (this.height / 2) - 24,
+                renderMainCroesusMenu
+            )
+        )
+        buttonList.add(
+            GuiButton(
+                0, (this.width / 2) - 100, (this.height / 2) + 2,
                 buttonLabel
             )
         )
         // toggles GuiConfig.useSellOffer
         buttonList.add(
             GuiButton(
-                1, (this.width / 2) - 100, (this.height / 2) + 2,
+                1, (this.width / 2) - 100, (this.height / 2) + 26,
                 sellOffer
             )
         )
@@ -54,7 +60,7 @@ class ConfigGUI : GuiScreen() {
         openGuiNameField?.text = GuiConfig.commandNames["goodmod"]
 
         // Dropdown menu for api endpoints
-        dropdownMenu = DropdownMenu((this.width / 2) - 100, (this.height / 2) + 26, 200, apis, selected)
+        dropdownMenu = DropdownMenu((this.width / 2) - 100, (this.height / 2) + 50, 200, apis, selected)
         dropdownMenu.initButtons(buttonList)
     }
 
@@ -73,6 +79,12 @@ class ConfigGUI : GuiScreen() {
                 GuiConfig.saveConfig()
                 GuiConfig.loadConfig()
                 button.displayString = sellOffer
+            }
+            2 -> {
+                GuiConfig.renderMainCroesusGui = !GuiConfig.renderMainCroesusGui
+                GuiConfig.saveConfig()
+                GuiConfig.loadConfig()
+                button.displayString = renderMainCroesusMenu
             }
             in 100..(100 + apis.size) -> {
                 dropdownMenu.handleButtonClick(button)
@@ -163,4 +175,7 @@ class ConfigGUI : GuiScreen() {
             !GuiConfig.useSellOffer -> "Using instasell"
             else -> "Error initiating config"
         }
+
+    private val renderMainCroesusMenu: String
+        get() = "Render Croesus Chest Overlay: ${GuiConfig.renderMainCroesusGui}"
 }
