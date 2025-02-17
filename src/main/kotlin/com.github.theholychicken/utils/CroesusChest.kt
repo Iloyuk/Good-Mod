@@ -19,7 +19,7 @@ class CroesusChest(
     val items: List<String>,
     val purchased: Boolean,
     val cost: Double,
-    val index: Int
+    val location: Pair<Int, Int>
 ) {
     val profit: Double = when (GuiConfig.api){
         "HypixelApi" -> calculateProfitHypixel()

@@ -10,6 +10,7 @@ import net.minecraft.nbt.NBTTagString
  * Backend for parsing croesus chests.
  * @param parseCroesusLoot saves all croesus chests as CroesusChest objects into the list runLoot
  * @param purchsedChest saves the name of the purchaed chest. If no chest is purchased, returns the empty string
+ * @param I dont know what @param means
  */
 object CroesusChestParser {
     private val GLASS_REGEX = Regex("1xtile.thinStainedGlass@\\d+$")
@@ -43,11 +44,13 @@ object CroesusChestParser {
 
             val lootSubList = subList(chestLoot, 1, endLootIndex)
 
+            val location = Pair(chest.inventorySlots[index].xDisplayPosition, chest.inventorySlots[index].yDisplayPosition)
+
             if (costIndex != null) {
                 val chestCost = findCost(chestLoot, costIndex ?: continue)
-                runLoot.add(CroesusChest(displayName, lootSubList, false, chestCost, index))
+                runLoot.add(CroesusChest(displayName, lootSubList, false, chestCost, location))
             } else {
-                runLoot.add(CroesusChest(displayName, lootSubList, true, 0.00, index))
+                runLoot.add(CroesusChest(displayName, lootSubList, true, 0.00, location))
                 purchasedChest = displayName
             }
         }

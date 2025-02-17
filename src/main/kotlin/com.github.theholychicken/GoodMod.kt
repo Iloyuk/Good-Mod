@@ -3,6 +3,7 @@ package com.github.theholychicken
 import com.github.theholychicken.commands.*
 import com.github.theholychicken.config.GuiConfig
 import com.github.theholychicken.gui.CroesusProfitHUD
+import com.github.theholychicken.gui.MainCroesusHUD
 import com.github.theholychicken.managers.*
 import com.github.theholychicken.managers.apiclients.HypixelApiClient
 import net.minecraft.client.Minecraft
@@ -40,7 +41,8 @@ class GoodMod {
         listOf(
             this,
             DungeonChestScanner,
-            CroesusProfitHUD
+            CroesusProfitHUD,
+            MainCroesusHUD
         ).forEach { MinecraftForge.EVENT_BUS.register(it) }
 
         // Commands
