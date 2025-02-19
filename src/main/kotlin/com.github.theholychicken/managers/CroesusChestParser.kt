@@ -1,5 +1,6 @@
 package com.github.theholychicken.managers
 
+import com.github.theholychicken.config.GuiConfig
 import com.github.theholychicken.utils.CroesusChest
 import com.github.theholychicken.utils.modMessage
 import net.minecraft.inventory.ContainerChest
@@ -119,6 +120,6 @@ object CroesusChestParser {
             .getOrNull(1)
             ?.profit ?: return
 
-        keyStatus = secondMostProfit > dungeonChestKeyPrice
+        keyStatus = secondMostProfit > dungeonChestKeyPrice + GuiConfig.minChestPurchase
     }
 }

@@ -2,6 +2,7 @@ package com.github.theholychicken.managers.apiclients
 
 import com.github.theholychicken.GoodMod
 import com.github.theholychicken.config.GuiConfig.useSellOffer
+import com.github.theholychicken.config.SellPricesConfig
 import com.github.theholychicken.managers.AuctionParser
 import com.github.theholychicken.utils.modMessage
 import com.google.gson.Gson
@@ -18,7 +19,7 @@ import java.util.concurrent.TimeUnit
  */
 object HypixelApiClient {
     private val gson = Gson()
-    private var key = getKey()
+    private var key = "owo" //getKey()
     val executor = Executors.newSingleThreadScheduledExecutor()
 
     fun scheduleHypixelApiPulls() {
@@ -34,11 +35,11 @@ object HypixelApiClient {
         }, 0, 30, TimeUnit.MINUTES)
     }
 
-    private fun getKey(): String {
-        if (useSellOffer) {
-            return "buy_summary"
+    private fun getKey(item: String): String {
+        if (SellPricesConfig.sellPrices[item] == true) {
+            return "buy_summary" // using sell offers
         } else {
-            return "sell_summary"
+            return "sell_summary" // using instasell
         }
     }
 
@@ -53,8 +54,8 @@ object HypixelApiClient {
 
             // check for success
             if (!jsonResponse.get("success").asBoolean) {
+                modMessage("Failed to fetch ah data. Please manually try refreshing with /goodmod:dev:updateauctions")
                 throw Exception("Failed to fetch auctions")
-                modMessage("Failed to fetch auctionhouse data. Please manually try refreshing with /goodmod:dev:updateauctions")
             }
 
             totalPages = jsonResponse.get("totalPages").asInt
@@ -84,21 +85,25 @@ object HypixelApiClient {
 
         // Check for success
         if (!bazaarJson.get("success").asBoolean) {
-            throw Exception("Failed to fetch bazaar data")
             modMessage("Failed to fetch bazaar data. Please manually try refreshing with /goodmod:dev:updateauctions")
+            throw Exception("Failed to fetch bazaar data")
         }
 
         // process bazaar
         val products = bazaarJson.getAsJsonObject("products")
-        products.entrySet().forEach { (thingy, value) ->
+        products.entrySet().forEach { (_, value) ->
             val itemName = value.asJsonObject.get("quick_status").asJsonObject.get("productId").asString
-            val price = value.asJsonObject.get(key)
-                ?.asJsonArray
-                ?.firstOrNull()
-                ?.asJsonObject
-                ?.get("pricePerUnit")
-                ?.asDouble ?: 0.00
-            AuctionParser.updateBazaar(itemName, price)
+            try {
+                val price = value.asJsonObject.get(getKey(itemName))
+                    ?.asJsonArray
+                    ?.firstOrNull()
+                    ?.asJsonObject
+                    ?.get("pricePerUnit")
+                    ?.asDouble ?: 0.00
+                AuctionParser.updateBazaar(itemName, price)
+            } catch (_: Exception) {
+                modMessage("Failed to update price for bazaar item: $itemName")
+            }
         }
 
         AuctionParser.saveToFile()

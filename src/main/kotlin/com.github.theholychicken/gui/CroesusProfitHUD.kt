@@ -1,5 +1,6 @@
 package com.github.theholychicken.gui
 
+import com.github.theholychicken.config.GuiConfig
 import com.github.theholychicken.managers.CroesusChestParser
 import com.github.theholychicken.managers.DungeonChestScanner
 import com.github.theholychicken.utils.modMessage
@@ -93,7 +94,7 @@ object CroesusProfitHUD {
                     GuiScreen.drawRect(slotX2, slotY2, slotX2 + 16, slotY2 + 16, 0x80E4D0AA.toInt())
                 }
                 GuiScreen.drawRect(slotX, slotY, slotX + 16, slotY + 16, 0x8000FF00.toInt())
-            } else if (CroesusChestParser.runLoot.maxOf { it.profit } > 0) {
+            } else if (CroesusChestParser.runLoot.maxOf { it.profit } > GuiConfig.minChestPurchase) {
                 GuiScreen.drawRect(slotX, slotY, slotX + 16, slotY + 16, 0x8000FF00.toInt())
             }
             GL11.glPopMatrix()

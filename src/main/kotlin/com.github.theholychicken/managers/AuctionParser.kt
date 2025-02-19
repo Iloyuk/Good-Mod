@@ -4,6 +4,7 @@ import com.github.theholychicken.GoodMod
 import java.io.File
 import com.github.theholychicken.GoodMod.Companion.mc
 import com.github.theholychicken.config.GuiConfig.useSellOffer
+import com.github.theholychicken.config.SellPricesConfig
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -76,7 +77,7 @@ object AuctionParser {
 
         val itemName = items[item] ?: return
 
-        val multi = if (useSellOffer) 0.9875F else 1F
+        val multi = if (SellPricesConfig.sellPrices[item] == true) 0.9875F else 1F
         auctionPrices[itemName] = (price * multi)
     }
 
