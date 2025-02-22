@@ -5,7 +5,6 @@ import com.github.theholychicken.config.SellPricesConfig
 import com.github.theholychicken.gui.utils.ToggleButton
 import com.github.theholychicken.gui.utils.renderRows
 import com.github.theholychicken.managers.AuctionParser
-import com.github.theholychicken.utils.modMessage
 import net.minecraft.client.gui.GuiButton
 import net.minecraft.client.gui.GuiScreen
 import org.lwjgl.input.Keyboard
@@ -23,12 +22,16 @@ class Floor6Gui : GuiScreen() {
 
         // init buttons here using util file
         renderRows(items, width, height, listOf(0xAA00AA, 0xAA00AA, 0xAA00AA)).forEach { buttonList.add(it) }
+        buttonList.add(GuiButton(100, width - 103, 3, 100, 20, "Back"))
     }
 
     @Throws(IOException::class)
     override fun actionPerformed(button: GuiButton) {
         if (button is ToggleButton) {
             SellPricesConfig.sellPrices[items[button.id].first] = !button.toggled
+        } else if (button.id == 100) {
+            SellPricesConfig.saveConfig()
+            mc.displayGuiScreen(ConfigSellPrices())
         }
     }
 

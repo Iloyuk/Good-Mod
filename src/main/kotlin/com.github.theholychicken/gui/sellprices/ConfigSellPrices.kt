@@ -1,7 +1,6 @@
 package com.github.theholychicken.gui.sellprices
 
 import com.github.theholychicken.GoodMod
-import com.github.theholychicken.utils.modMessage
 import net.minecraft.client.gui.GuiButton
 import net.minecraft.client.gui.GuiScreen
 import java.io.IOException
@@ -25,6 +24,7 @@ class ConfigSellPrices : GuiScreen() {
         buttonList.add(GuiButton(7, width / 2 - 50, height / 2 + 25, 100, 20, "Enchants"))
         buttonList.add(GuiButton(8, width / 2 + 75, height / 2 + 25, 100, 20, "Ultimate Enchants"))
         buttonList.add(GuiButton(9, width / 2 - 50, height / 2 + 50, 100, 20, "Miscellaneous"))
+        buttonList.add(GuiButton(100, width - 103, 3, 100, 20, "Exit"))
     }
 
     @Throws(IOException::class)
@@ -40,6 +40,7 @@ class ConfigSellPrices : GuiScreen() {
             7 -> EnchantsGui.open()
             8 -> UltEnchantsGui.open()
             9 -> MiscGui.open()
+            100 -> mc.displayGuiScreen(null)
         }
     }
 

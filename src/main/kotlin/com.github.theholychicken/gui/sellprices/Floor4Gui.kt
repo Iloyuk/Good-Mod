@@ -22,12 +22,16 @@ class Floor4Gui : GuiScreen() {
 
         // init buttons here using util file
         renderRows(items, width, height, listOf(0xAA00AA, 0x5555FF, 0x5555FF, 0xAA00AA)).forEach { buttonList.add(it) }
+        buttonList.add(GuiButton(100, width - 103, 3, 100, 20, "Back"))
     }
 
     @Throws(IOException::class)
     override fun actionPerformed(button: GuiButton) {
         if (button is ToggleButton) {
             SellPricesConfig.sellPrices[items[button.id].first] = !button.toggled
+        } else if (button.id == 100) {
+            SellPricesConfig.saveConfig()
+            mc.displayGuiScreen(ConfigSellPrices())
         }
     }
 

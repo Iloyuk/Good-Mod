@@ -22,12 +22,16 @@ class UltEnchantsGui : GuiScreen() {
 
         // init buttons here using util file
         renderRows(items, width, height, items.indices.map { _ -> 0xFF55FF }).forEach { buttonList.add(it) }
+        buttonList.add(GuiButton(100, width - 103, 3, 100, 20, "Back"))
     }
 
     @Throws(IOException::class)
     override fun actionPerformed(button: GuiButton) {
         if (button is ToggleButton) {
             SellPricesConfig.sellPrices[items[button.id].first] = !button.toggled
+        } else if (button.id == 100) {
+            SellPricesConfig.saveConfig()
+            mc.displayGuiScreen(ConfigSellPrices())
         }
     }
 
