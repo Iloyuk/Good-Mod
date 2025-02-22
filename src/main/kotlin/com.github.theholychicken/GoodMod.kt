@@ -2,6 +2,7 @@ package com.github.theholychicken
 
 import com.github.theholychicken.commands.*
 import com.github.theholychicken.config.GuiConfig
+import com.github.theholychicken.config.SellPricesConfig
 import com.github.theholychicken.gui.CroesusProfitHUD
 import com.github.theholychicken.gui.MainCroesusHUD
 import com.github.theholychicken.managers.*
@@ -33,6 +34,7 @@ class GoodMod {
         if (ItemDropParser.dropsConfig.getList().isEmpty()) {
             ItemDropParser.initConfig()
         }
+        SellPricesConfig.loadConfig()
     }
 
     @Mod.EventHandler

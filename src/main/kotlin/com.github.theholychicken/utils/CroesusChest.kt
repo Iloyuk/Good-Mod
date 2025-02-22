@@ -28,8 +28,8 @@ class CroesusChest(
         else -> calculateProfitHypixel()
     }
     private val itemTags = thing()
-    // this is going to break, i need to make it work
-    fun thing(): MutableList<String> {
+
+    private fun thing(): MutableList<String> {
         val returnList = mutableListOf<String>()
         items.forEach {
             when {
@@ -53,9 +53,10 @@ class CroesusChest(
                 }
 
                 else -> {
-                    AuctionParser.items.entries.find { (key, value) ->
+                    AuctionParser.toKey(it)
+                    /*AuctionParser.items.entries.find { (key, value) ->
                         it.substringAfterLast("§") == value
-                    }
+                    }*/
                 }
             }
         }

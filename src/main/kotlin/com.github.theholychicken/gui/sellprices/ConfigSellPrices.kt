@@ -30,22 +30,22 @@ class ConfigSellPrices : GuiScreen() {
     @Throws(IOException::class)
     override fun actionPerformed(button: GuiButton) {
         when (button.id) {
-            0 -> modMessage("You clicked Floor 7")
-            1 -> modMessage("You clicked Floor 6")
-            2 -> modMessage("You clicked Floor 5")
-            3 -> modMessage("You clicked Floor 4")
-            4 -> modMessage("You clicked Floor 3")
-            5 -> modMessage("You clicked Floor 2")
-            6 -> modMessage("You clicked Floor 1")
-            7 -> modMessage("You clicked Enchants")
-            8 -> modMessage("You clicked Ultimate Enchants")
-            9 -> modMessage("You clicked Miscellaneous")
+            0 -> Floor7Gui.open()
+            1 -> Floor6Gui.open()
+            2 -> Floor5Gui.open()
+            3 -> Floor4Gui.open()
+            4 -> Floor3Gui.open()
+            5 -> Floor2Gui.open()
+            6 -> Floor1Gui.open()
+            7 -> EnchantsGui.open()
+            8 -> UltEnchantsGui.open()
+            9 -> MiscGui.open()
         }
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
         drawDefaultBackground()
-        drawCenteredString(fontRendererObj, "Select option to expand drops", width / 2, height / 2 - 50, 0x00FFFF)
+        drawCenteredString(fontRendererObj, "§lSelect option to expand drops", width / 2, height / 2 - 50, 0x00FFFF)
         for (button in buttonList) {
             button.drawButton(mc, mouseX, mouseY)
         }
