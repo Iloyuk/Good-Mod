@@ -21,13 +21,13 @@ class CroesusChest(
     val cost: Double,
     val location: Pair<Int, Int>
 ) {
+    private val itemTags = thing()
     val profit: Double = when (GuiConfig.api){
         "HypixelApi" -> calculateProfitHypixel()
         "CoflApi" -> calculateProfitCofl()
         "TrickedApi" -> calculateProfitTricked()
         else -> calculateProfitHypixel()
     }
-    private val itemTags = thing()
 
     private fun thing(): MutableList<String> {
         val returnList = mutableListOf<String>()
@@ -54,9 +54,6 @@ class CroesusChest(
 
                 else -> {
                     AuctionParser.toKey(it)
-                    /*AuctionParser.items.entries.find { (key, value) ->
-                        it.substringAfterLast("§") == value
-                    }*/
                 }
             }
         }
@@ -107,8 +104,28 @@ class CroesusChest(
     private fun calculateProfitCofl(): Double {
         if (purchased) return 0.00
 
-        return itemTags.sumOf {
-            CoflApiClient.fetchPrice(it)
+        try {
+            modMessage(itemTags.size)
+        } catch (e: Exception) {
+            modMessage(e)
+            modMessage("failed to PRINT itemtags")
+        }
+        try {
+            itemTags.forEach { modMessage(it) }
+        } catch (e: Exception) {
+            modMessage(e)
+            modMessage("failed to PRINT itemtags2")
+        }
+
+        try {
+            return itemTags.sumOf {
+                val price = CoflApiClient.fetchPrice(it)
+                modMessage("Price for $it is $price")
+                price
+            }
+        } catch (e: Exception) {
+            modMessage(e)
+            return -cost
         }
     }
 
