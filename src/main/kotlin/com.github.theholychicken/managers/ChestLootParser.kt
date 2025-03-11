@@ -1,5 +1,6 @@
 package com.github.theholychicken.managers
 
+import com.github.theholychicken.utils.CroesusChest
 import com.github.theholychicken.utils.modMessage
 import net.minecraft.init.Blocks
 import net.minecraft.inventory.ContainerChest
@@ -13,6 +14,8 @@ object ChestLootParser {
     private val QUANTITY_REGEX = Regex("(\\d+)$")
     private val collectedItems = mutableListOf<String>()
     private val essenceCounts = mutableMapOf<String, Int>()
+    private val chestLoot = mutableListOf<String>()
+    lateinit var croesusChest: CroesusChest
 
     // Process instance of DUNGEON_CHEST
     fun parseChestLoot(chest: ContainerChest) {
@@ -31,28 +34,46 @@ object ChestLootParser {
                     tagCompound.getCompoundTag("display")
                         .getTagList("Lore", NBTTagString().id.toInt())
                         .getStringTagAt(0)
-                        .let { collectedItems.add(it) }
+                        .let { collectedItems.add(it)
+                            chestLoot.add("§aEnchanted Book($it§a)")
+                        }
                 }
                 WITHER_ESSENCE_REGEX.matches(displayName) -> {
                     QUANTITY_REGEX.find(displayName)?.groupValues?.get(1)?.toIntOrNull()?.let {
                         essenceCounts["Wither Essence"] = it
+                        chestLoot.add(displayName)
                     }
                 }
                 UNDEAD_ESSENCE_REGEX.matches(displayName) -> {
                     QUANTITY_REGEX.find(displayName)?.groupValues?.get(1)?.toIntOrNull()?.let {
                         essenceCounts["Undead Essence"] = it
+                        chestLoot.add(displayName)
                     }
                 }
                 else -> {
                     collectedItems.add(displayName)
+                    chestLoot.add(displayName)
                 }
             }
         }
+
+        croesusChest = CroesusChest("", chestLoot, false, getCost(chest.lowerChestInventory.getStackInSlot(31).tagCompound), Pair(0,0))
     }
 
     // Checks if NBT data defines an enchanted book
     private fun isEnchantedBook(tagCompound: NBTTagCompound) =
         tagCompound.getCompoundTag("ExtraAttributes").getString("id") == "ENCHANTED_BOOK"
+
+    private fun getCost(tagCompound: NBTTagCompound): Double {
+        val tags = tagCompound.getCompoundTag("display").getTagList("Lore", NBTTagString().id.toInt())
+        for (i in 0 until tags.tagCount()) {
+            if (tags.get(i).toString().contains(Regex("Coins"))) {
+                val endIndex = tags.get(i).toString().indexOf("Coins") - 2
+                return tags.get(i).toString().substring(2, endIndex).replace(",", "").toDouble()
+            }
+        }
+        return 0.0
+    }
 
     fun dumpCollectedItems() {
         collectedItems.forEach { itemName ->

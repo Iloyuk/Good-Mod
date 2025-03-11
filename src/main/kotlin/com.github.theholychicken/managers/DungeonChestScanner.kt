@@ -29,6 +29,7 @@ object DungeonChestScanner {
     var croesusIsParsed = false
     private var isMainCroesusGuiOpen = false
     var mainCroesusIsParsed = false
+    var chestIsParsed = false
 
     // Check for instance of DUNGEON_CHEST
     @SubscribeEvent
@@ -36,6 +37,7 @@ object DungeonChestScanner {
         if (event.gui == null) {
             croesusIsParsed = false
             mainCroesusIsParsed = false
+            chestIsParsed = false
             return
         }
         val gui = event.gui as? GuiChest ?: return
@@ -57,6 +59,7 @@ object DungeonChestScanner {
         croesusIsParsed = false
         isMainCroesusGuiOpen = false
         mainCroesusIsParsed = false
+        chestIsParsed = false
         MainCroesusGuiParser.openedChests.clear()
 
         when {
@@ -87,6 +90,7 @@ object DungeonChestScanner {
             isMainCroesusGuiOpen = false
             croesusIsParsed = false
             mainCroesusIsParsed = false
+            chestIsParsed = false
             return
         } else chestContainer = currentScreen.inventorySlots as? ContainerChest ?: return
 
@@ -102,6 +106,7 @@ object DungeonChestScanner {
             chestContainer?.let {
                 if (isChestGuiOpen) {
                     chestLootParser.parseChestLoot(it)
+                    chestIsParsed = true
                 } else if (isCroesusGuiOpen) {
                     AuctionParser.initFromFile()
                     croesusChestParser.parseCroesusLoot(it)
@@ -139,6 +144,7 @@ object DungeonChestScanner {
         if (currentScreen.slotUnderMouse == null || !Mouse.getEventButtonState() || currentScreen.slotUnderMouse?.slotNumber != 31) return
         dumpCollectedItems()
         isChestGuiOpen = false
+        chestIsParsed = false
         GoodMod.logger.info("Dungeon loot saved")
     }
 
