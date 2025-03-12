@@ -13,12 +13,12 @@ object ItemDropParser {
     // Initialize the item drop patterns
     init {
         // Floor 7 items
-        itemDropPatterns["§5Shiny Necron's Handle"] = "§r§5Shiny Necron's Handles§r: "
+        itemDropPatterns["§6Shiny Necron's Handle"] = "§r§5Shiny Necron's Handles§r: "
         itemDropPatterns["§6Shiny Wither Helmet"] = "§r§6Shiny Wither Helmets§r: "
         itemDropPatterns["§6Shiny Wither Chestplate"] = "§r§6Shiny Wither Chestplates§r: "
         itemDropPatterns["§6Shiny Wither Leggings"] = "§r§6Shiny Wither Leggings§r: "
         itemDropPatterns["§6Shiny Wither Boots"] = "§r§6Shiny Wither Boots§r: "
-        itemDropPatterns["§5Necron's Handle"] = "§r§5Necron's Handles§r: "
+        itemDropPatterns["§6Necron's Handle"] = "§r§5Necron's Handles§r: "
         itemDropPatterns["§5Implosion"] = "§r§5Implosions§r: "
         itemDropPatterns["§5Shadow Warp"] = "§r§5Shadow Warps§r: "
         itemDropPatterns["§5Wither Shield"] = "§r§5Wither Shields§r: "
@@ -141,15 +141,6 @@ object ItemDropParser {
         itemDropPatterns["Undead Essence"] = "§dUndead Essence§r: §8"
     }
 
-    // Method to parse chat messages and update the drops configuration
-    fun parseChatMessage(message: String) {
-        itemDropPatterns.forEach { (itemPattern, itemDescription) ->
-            if (message.contains(itemPattern)) {
-                dropsConfig.addItem(itemDescription + message)
-            }
-        }
-    }
-
     fun reloadConfig() {
         dropsConfig.loadConfig()
     }
@@ -164,6 +155,7 @@ object ItemDropParser {
         dropsConfig.loadConfig()
     }
 
+    // is thsis useful?
     fun getModifiedKeys(): List<String> {
          return itemDropPatterns.keys.map { key -> key.substring(2) }
     }
