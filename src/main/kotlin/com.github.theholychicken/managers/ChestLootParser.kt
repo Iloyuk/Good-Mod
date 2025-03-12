@@ -21,6 +21,7 @@ object ChestLootParser {
     fun parseChestLoot(chest: ContainerChest) {
         collectedItems.clear()
         essenceCounts.clear()
+        chestLoot.clear()
 
         for (index in 9..17) {
             val stack = chest.lowerChestInventory.getStackInSlot(index)
@@ -34,8 +35,9 @@ object ChestLootParser {
                     tagCompound.getCompoundTag("display")
                         .getTagList("Lore", NBTTagString().id.toInt())
                         .getStringTagAt(0)
-                        .let { collectedItems.add(it)
-                            chestLoot.add("§aEnchanted Book($it§a)")
+                        .let {
+                            collectedItems.add(it)
+                            chestLoot.add(it)
                         }
                 }
                 WITHER_ESSENCE_REGEX.matches(displayName) -> {
@@ -57,22 +59,32 @@ object ChestLootParser {
             }
         }
 
-        croesusChest = CroesusChest("", chestLoot, false, getCost(chest.lowerChestInventory.getStackInSlot(31).tagCompound), Pair(0,0))
+        croesusChest = CroesusChest("TEST", chestLoot, false, getCost(chest.lowerChestInventory.getStackInSlot(31).tagCompound), Pair(0,0))
     }
 
     // Checks if NBT data defines an enchanted book
     private fun isEnchantedBook(tagCompound: NBTTagCompound) =
         tagCompound.getCompoundTag("ExtraAttributes").getString("id") == "ENCHANTED_BOOK"
 
+    // returns cost of the chest
     private fun getCost(tagCompound: NBTTagCompound): Double {
         val tags = tagCompound.getCompoundTag("display").getTagList("Lore", NBTTagString().id.toInt())
+
+        var cost = 0.0
         for (i in 0 until tags.tagCount()) {
-            if (tags.get(i).toString().contains(Regex("Coins"))) {
-                val endIndex = tags.get(i).toString().indexOf("Coins") - 2
-                return tags.get(i).toString().substring(2, endIndex).replace(",", "").toDouble()
+            if (tags.get(i).toString().contains(Regex("Cost"))) {
+                if (tags.get(i + 2).toString().contains(Regex("§9Dungeon Chest Key"))) {
+                    cost += AuctionParser.auctionPrices["Dungeon Chest Key"] ?: 0.00
+                } else if (tags.get(i + 1).toString().contains(Regex("§9Dungeon Chest Key"))) {
+                    cost += AuctionParser.auctionPrices["Dungeon Chest Key"] ?: 0.00
+                    return cost
+                }
+                val coins = tags.get(i + 1).toString().drop(3).dropLast(7)
+                coins.replace(",", "").let { if (it != "") cost += it.toInt() }
+                //cost += (coins.replace(",", "").toInt() ?: 0)
             }
         }
-        return 0.0
+        return cost
     }
 
     fun dumpCollectedItems() {

@@ -3,9 +3,11 @@ package com.github.theholychicken
 import com.github.theholychicken.commands.*
 import com.github.theholychicken.config.GuiConfig
 import com.github.theholychicken.config.SellPricesConfig
+import com.github.theholychicken.gui.ChestProfitTooltip
 import com.github.theholychicken.gui.CroesusProfitHUD
 import com.github.theholychicken.gui.MainCroesusHUD
 import com.github.theholychicken.managers.*
+import com.github.theholychicken.managers.apiclients.HttpClient
 import com.github.theholychicken.managers.apiclients.HypixelApiClient
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiScreen
@@ -44,7 +46,8 @@ class GoodMod {
             this,
             DungeonChestScanner,
             CroesusProfitHUD,
-            MainCroesusHUD
+            MainCroesusHUD,
+            ChestProfitTooltip
         ).forEach { MinecraftForge.EVENT_BUS.register(it) }
 
         // Commands
@@ -55,7 +58,7 @@ class GoodMod {
             UpdateAuctionsCommand()
         ).forEach { ClientCommandHandler.instance.registerCommand(it) }
 
-        HypixelApiClient.scheduleHypixelApiPulls()
+        HttpClient.scheduleApiPulls()
 
         // Uncomment to access developer command - reloads AwA config when run
         //ClientCommandHandler.instance.registerCommand(ReloadCommand());
@@ -63,7 +66,7 @@ class GoodMod {
 
     @Mod.EventHandler
     fun onShutdown(event: FMLModDisabledEvent) {
-        HypixelApiClient.executor.shutdown()
+        HttpClient.executor.shutdown()
     }
 
     // Bonsai witchcraft

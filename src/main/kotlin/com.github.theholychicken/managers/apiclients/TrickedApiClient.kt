@@ -6,4 +6,8 @@ object TrickedApiClient {
         val response = HttpClient.sendRequest("https://lb.tricked.pro/lowestbin/$itemTag")
         return response.toDouble()
     }
+
+    fun fetchAllAuctions() {
+        //
+    }
 }

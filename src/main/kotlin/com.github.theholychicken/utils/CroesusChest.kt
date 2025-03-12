@@ -8,6 +8,12 @@ import com.github.theholychicken.managers.apiclients.TrickedApiClient
 /**
  * Represents a Croesus chest with details about its contents, purchase status, cost, and profit.
  *
+ * @param name The name of the chest
+ * @param items a List<String> of items in the chest
+ * @param purchased whether the chest is purchased or not
+ * @param cost the cost of the chest
+ * @param location chest coordinates, passed as Pair<Int, Int>
+ *
  * @property name The display name of the chest.
  * @property items The list of items in the chest.
  * @property purchased Whether the chest has been purchased.
@@ -18,16 +24,11 @@ class CroesusChest(
     val name: String,
     val items: List<String>,
     val purchased: Boolean,
-    val cost: Double,
+    private val cost: Double,
     val location: Pair<Int, Int>
 ) {
     private val itemTags = thing()
-    val profit: Double = when (GuiConfig.api){
-        "HypixelApi" -> calculateProfitHypixel()
-        "CoflApi" -> calculateProfitCofl()
-        "TrickedApi" -> calculateProfitTricked()
-        else -> calculateProfitHypixel()
-    }
+    val profit: Double = calculateProfit()
 
     private fun thing(): MutableList<String> {
         val returnList = mutableListOf<String>()
@@ -60,7 +61,8 @@ class CroesusChest(
         return returnList
     }
 
-    private fun calculateProfitHypixel(): Double {
+
+    private fun calculateProfit(): Double {
         val auctionPrices = AuctionParser.auctionPrices.takeIf { it.isNotEmpty() } ?: run {
             modMessage("Auction/Bazaar prices are empty or null! Try manually refreshing with /updateauctions. If this does not fix the issue, please open an issue on the github.")
             return -cost
@@ -99,41 +101,5 @@ class CroesusChest(
                 }
             }
         } - cost
-    }
-
-    private fun calculateProfitCofl(): Double {
-        if (purchased) return 0.00
-
-        try {
-            modMessage(itemTags.size)
-        } catch (e: Exception) {
-            modMessage(e)
-            modMessage("failed to PRINT itemtags")
-        }
-        try {
-            itemTags.forEach { modMessage(it) }
-        } catch (e: Exception) {
-            modMessage(e)
-            modMessage("failed to PRINT itemtags2")
-        }
-
-        try {
-            return itemTags.sumOf {
-                val price = CoflApiClient.fetchPrice(it)
-                modMessage("Price for $it is $price")
-                price
-            }
-        } catch (e: Exception) {
-            modMessage(e)
-            return -cost
-        }
-    }
-
-    private fun calculateProfitTricked(): Double {
-        if (purchased) return 0.00
-
-        return itemTags.sumOf {
-            TrickedApiClient.fetchPrice(it)
-        }
     }
 }

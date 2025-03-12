@@ -78,9 +78,7 @@ object CroesusChestParser {
         return sublist
     }
 
-    private fun isEnchantedBook(tag: String): Boolean {
-        return tag.contains("(") && tag.contains("(")
-    }
+    private fun isEnchantedBook(tag: String): Boolean = tag.contains("(")
 
   // finds the cost of the chest
     private fun findCost(tagList: NBTTagList, index: Int): Double {

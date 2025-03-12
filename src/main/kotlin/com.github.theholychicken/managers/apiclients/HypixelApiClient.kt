@@ -1,17 +1,13 @@
 package com.github.theholychicken.managers.apiclients
 
 import com.github.theholychicken.GoodMod
-import com.github.theholychicken.config.GuiConfig.useSellOffer
 import com.github.theholychicken.config.SellPricesConfig
 import com.github.theholychicken.managers.AuctionParser
 import com.github.theholychicken.utils.modMessage
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 
 /**
  * Client for managing Hypixel auctions API calls
@@ -20,20 +16,6 @@ import java.util.concurrent.TimeUnit
 object HypixelApiClient {
     private val gson = Gson()
     private var key = "owo" //getKey()
-    val executor = Executors.newSingleThreadScheduledExecutor()
-
-    fun scheduleHypixelApiPulls() {
-        executor.scheduleAtFixedRate({
-            runBlocking {
-                try {
-                    GoodMod.logger.info("Beginning auction fetch")
-                    fetchAllAuctions()
-                } catch (e: Exception) {
-                    GoodMod.logger.error("Exception occured: $e")
-                }
-            }
-        }, 0, 30, TimeUnit.MINUTES)
-    }
 
     private fun getKey(item: String): String {
         if (SellPricesConfig.sellPrices[item] == true) {
