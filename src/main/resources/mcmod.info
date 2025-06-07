@@ -5,12 +5,12 @@
     "description": "a good mod",
     "version": "${version}",
     "mcversion": "${mcversion}",
-    "url": "https://github.com/TheHolyChickn/TheHolyChicknAddons/",
+    "url": "https://github.com/TheHolyChickn/Good-Mod/",
     "updateUrl": "",
     "authorList": [
       "The Holy Chicken"
     ],
-    "credits": "Thank you to odtheking for helping with random stuff. A lot of code taken from this wonderful tutorial and template: https://moddev.nea.moe/ :3",
+    "credits": "Thank you to odtheking for helping with random stuff. Credit to this template: https://moddev.nea.moe/. Also credit to the Cofl team and Tricked Dev for maintaining the Cofl api and Tricked api, respectively :3",
     "logoFile": "good_mod.png",
     "screenshots": [],
     "dependencies": []

@@ -54,9 +54,9 @@ object CroesusChestParser {
                 runLoot.add(CroesusChest(displayName, lootSubList, true, 0.00, location))
                 purchasedChest = displayName
             }
-
-            setKeyStatus()
         }
+
+        setKeyStatus()
     }
 
     // adds a sublist function to NBTTagLists

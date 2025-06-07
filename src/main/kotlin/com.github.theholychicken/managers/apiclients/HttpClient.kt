@@ -2,6 +2,7 @@ package com.github.theholychicken.managers.apiclients
 
 import com.github.theholychicken.GoodMod
 import com.github.theholychicken.config.GuiConfig
+import com.github.theholychicken.utils.modMessage
 import com.google.gson.Gson
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
@@ -23,7 +24,9 @@ object HttpClient {
 
         httpClient.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
-                throw IOException("API request was unsuccessful.")
+                modMessage("Error sending request to $url")
+                modMessage("API request was unsuccessful: ${response.code} ${response.message}")
+                throw IOException("API request was unsuccessful: ${response.code} ${response.message}")
             }
             return response.body?.string() ?: throw IOException("Empty response")
         }

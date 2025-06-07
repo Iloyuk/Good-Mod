@@ -17,16 +17,6 @@ import com.google.gson.reflect.TypeToken
  * @property items contains the list of unformatted items in itemDropPatterns
  * @property initFromFile pulls data from the saved file
  */
-/*
- * TODO
- *  Implement COFL, Tricked <<- currently working
- *  Implement in-chest profit calc <-<
- *  Ensure spirit pet compatability <-<
- *  Implement kismet logic and renders <-<
- *  Improve hud information
- *  Implement custom no-skip items
- *  Implement items to choose to calc as combined books rather than uncombined
- */
 object AuctionParser {
     var auctionPrices: MutableMap<String, Double> = mutableMapOf()
     //private val items = ItemDropParser.getModifiedKeys()
@@ -40,6 +30,7 @@ object AuctionParser {
     )
     private val gson: Gson = GsonBuilder().setPrettyPrinting().create()
 
+    // pretty sure this stuff is saved in memory anyways i should prolly delete this crap
     private val PRICES_FILE = File(mc.mcDataDir, "config/goodmod/prices.json").apply {
         try {
             createNewFile()
@@ -49,6 +40,7 @@ object AuctionParser {
     }
 
     // updates an entry as an auction thingy
+    // TODO: make it account for listing fees and taxes
     fun updateAuction(item: String, price: Double, rarity: String = "") {
         if (!isAuctionable(item) && item !in shinyItems) return
 
@@ -62,17 +54,14 @@ object AuctionParser {
             }
         }
 
-        val auctionItemPrice = auctionPrices[itemName] ?: Double.MAX_VALUE
-
-        if ((itemName in auctionPrices.keys && price < auctionItemPrice) || itemName !in auctionPrices.keys)
-            auctionPrices[itemName] = price
+        auctionPrices[itemName] = auctionPriceLogic(price)
     }
 
     // updates an entry using bazaar data
     fun updateBazaar(item: String, price: Double) {
         val itemName = isBazaarable(item) ?: return
 
-        val multi = if (SellPricesConfig.sellPrices[item] == true) 0.9875F else 1F
+        val multi = if (SellPricesConfig.sellPrices[item] == true) 0.9875F else 1F // tax
         auctionPrices[itemName] = (price * multi)
     }
 
@@ -130,6 +119,29 @@ object AuctionParser {
         }
 
         return null
+    }
+
+    private fun auctionPriceLogic(price: Double): Double {
+        // claim tax
+        var modifiedPrice: Double = price - (price * 0.01)
+
+        // listing tax
+        when {
+            price <= 9999999.0 -> {
+                modMessage("price $price satisfies 1 <= $price <= 9,999,999")
+                modifiedPrice -= (price * 0.01)
+            }
+            price <= 99999999.0 -> {
+                modMessage("price $price  satisfies 10,000,000 <= $price <= 99,999,999")
+                modifiedPrice -= (price * 0.02)
+            }
+            price >= 100000000 -> {
+                modMessage("price $price satisfies 100,000,000 <= $price")
+                modifiedPrice -= (price * 0.025)
+            }
+        }
+
+        return modifiedPrice
     }
 
     // this doesnt exist

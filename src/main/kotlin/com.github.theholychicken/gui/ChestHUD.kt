@@ -7,6 +7,7 @@ import net.minecraft.client.gui.ScaledResolution
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+// wtf is this
 object ChestHUD {
 
     @SubscribeEvent
