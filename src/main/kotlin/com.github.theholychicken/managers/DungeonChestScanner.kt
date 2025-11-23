@@ -155,5 +155,5 @@ object DungeonChestScanner {
     }
 
     private val CHEST_PATTERN = Regex("(Wood|Gold|Diamond|Emerald|Obsidian|Bedrock) Chest")
-    private val CROESUS_PATTERN = Regex("^(Master Mode )?The Catacombs - Flo(or (IV|V?I{0,3}))?$")
+    private val CROESUS_PATTERN = Regex("^(Master Mode )?Catacombs - Flo(or (IV|V?I{0,3}))?$")
 }

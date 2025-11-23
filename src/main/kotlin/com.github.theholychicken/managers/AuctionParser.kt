@@ -128,15 +128,15 @@ object AuctionParser {
         // listing tax
         when {
             price <= 9999999.0 -> {
-                modMessage("price $price satisfies 1 <= $price <= 9,999,999")
+                //modMessage("price $price satisfies 1 <= $price <= 9,999,999")
                 modifiedPrice -= (price * 0.01)
             }
             price <= 99999999.0 -> {
-                modMessage("price $price  satisfies 10,000,000 <= $price <= 99,999,999")
+                //modMessage("price $price  satisfies 10,000,000 <= $price <= 99,999,999")
                 modifiedPrice -= (price * 0.02)
             }
             price >= 100000000 -> {
-                modMessage("price $price satisfies 100,000,000 <= $price")
+                //modMessage("price $price satisfies 100,000,000 <= $price")
                 modifiedPrice -= (price * 0.025)
             }
         }
