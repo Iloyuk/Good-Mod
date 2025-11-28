@@ -182,6 +182,9 @@ object AuctionParser {
             put("WITHER_CATALYST", "Wither Catalyst")
             put("PRECURSOR_GEAR", "Precursor Gear")
             put("FIFTH_MASTER_STAR", "Fifth Master Star")
+            put("SHARD_POWER_DRAGON", "Power Dragon Shard")
+            put("SHARD_APEX_DRAGON", "Apex Dragon Shard")
+            put("SHARD_WITHER", "Wither Shard")
         }
 
         // Floor 6 - Auctions
@@ -239,6 +242,7 @@ object AuctionParser {
             put("SPIRIT_BONE", "Spirit Bone")
             put("SPIRIT_DECOY", "Spirit Stone")
             put("SECOND_MASTER_STAR", "Second Master Star")
+            put("SHARD_THORN", "Thorn Shard")
         }
 
         // Floor 3 - Auctions
@@ -265,6 +269,7 @@ object AuctionParser {
         // Floor 2 - Bazaar
         catalog["floor_2"]?.get("bazaar")?.apply {
             put("RED_SCARF", "Red Scarf")
+            put("SHARD_SCARF", "Scarf Shard")
         }
 
         // Floor 1 - Auctions

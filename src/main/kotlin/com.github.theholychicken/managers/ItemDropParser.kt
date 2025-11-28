@@ -36,6 +36,9 @@ object ItemDropParser {
         itemDropPatterns["§cStorm the Fish"] = "§r§aStorm the Fish§r: "
         itemDropPatterns["§cGoldor the Fish"] = "§r§aGoldor the Fish§r: "
         itemDropPatterns["§cMaxor the Fish"] = "§r§aMaxor the Fish§r: "
+        itemDropPatterns["§6Power Dragon Shard"] = "§r§6Power Dragon Shard: "
+        itemDropPatterns["§6Apex Dragon Shard"] = "§r§6Apex Dragon Shard: "
+        itemDropPatterns["§9Wither Shard"] = "§r§9Wither Shard: "
         // Floor 6 items
         itemDropPatterns["§6Giant's Sword"] = "§r§6Giant's Swords§r: "
         itemDropPatterns["§6Precursor Eye"] = "§r§6Precursor Eyes§r: "
@@ -69,6 +72,7 @@ object ItemDropParser {
         itemDropPatterns["§6Spirit Sword"] = "§r§6Spirit Swords§r: "
         itemDropPatterns["§6Spirit Boots"] = "§r§6Spirit Boots§r: "
         itemDropPatterns["§9Spirit Stone"] = "§r§9Spirit Stones§r: "
+        itemDropPatterns["§6Thorn Shard"] = "§r§6Thorn Shard: "
         // Floor 3 items
         itemDropPatterns["§5Adaptive Helmet"] = "§r§5Adaptive Helmets§r: "
         itemDropPatterns["§5Adaptive Chestplate"] = "§r§5Adaptive Chestplates§r: "
@@ -80,6 +84,7 @@ object ItemDropParser {
         itemDropPatterns["§5Adaptive Blade"] = "§r§5Adaptive Blades§r: "
         itemDropPatterns["§5Adaptive Belt"] = "§r§5Adaptive Belts§r: "
         itemDropPatterns["§9Scarf's Studies"] = "§r§9Scarf's Studies§r: "
+        itemDropPatterns["§6Scarf Shard"] = "§r§6Scarf Shard: "
         // Floor 1 items
         itemDropPatterns["§9Bonzo's Staff"] = "§r§9Bonzo's Staffs§r: "
         itemDropPatterns["§9Bonzo's Mask"] = "§r§9Bonzo's Masks§r: "
