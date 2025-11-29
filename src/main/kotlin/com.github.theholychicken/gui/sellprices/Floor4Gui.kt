@@ -21,7 +21,7 @@ class Floor4Gui : GuiScreen() {
         buttonList.clear()
 
         // init buttons here using util file
-        renderRows(items, width, height, listOf(0xAA00AA, 0x5555FF, 0x5555FF, 0xAA00AA)).forEach { buttonList.add(it) }
+        renderRows(items, width, height, listOf(0xAA00AA, 0x5555FF, 0x5555FF, 0xAA00AA, 0xFFAA00)).forEach { buttonList.add(it) }
         buttonList.add(GuiButton(100, width - 103, 3, 100, 20, "Back"))
     }
 

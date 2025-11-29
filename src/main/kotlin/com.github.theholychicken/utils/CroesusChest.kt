@@ -30,7 +30,7 @@ class CroesusChest(
     private val itemTags = thing()
     val profit: Double = calculateProfit()
 
-    private fun thing(): MutableList<String> {
+    private fun thing(): MutableList<String> { // what does this do
         val returnList = mutableListOf<String>()
         items.forEach {
             when {
@@ -82,6 +82,19 @@ class CroesusChest(
                     val price = auctionPrices["Undead Essence"] ?: 0.0
                     val quantity = Regex("(\\d+)$").find(it)?.groupValues?.get(1)?.toIntOrNull() ?: 0
                     quantity * price
+                }
+
+                it.matches(Regex("§[0-9a-fk-or].+ Shard §8x\\d+")) -> {
+                    val match = Regex("§[0-9a-fk-or](.+) §8x(\\d+)").find(it)
+                    if (match != null) {
+                        val (name, quantityStr) = match.destructured
+                        val price = auctionPrices[name] ?: 0.0
+                        val quantity = quantityStr.toIntOrNull() ?: 0
+                        quantity * price
+                    } else {
+                        modMessage("Failed to parse shard instance $it")
+                        0.0
+                    }
                 }
 
                 it.matches(Regex("§7[Lvl 1] §\\dSpirit")) -> {
