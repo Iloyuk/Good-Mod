@@ -35,7 +35,6 @@ class ConfigSellPrices : GuiScreen() {
             add(GuiButton(9, width / 2 - 50, height / 2 + 50, 100, 20, "Miscellaneous"))
             add(GuiButton(100, width - 103, 3, 100, 20, "Exit"))
         }
-        buttonList.clear()
     }
 
     @Throws(IOException::class)
