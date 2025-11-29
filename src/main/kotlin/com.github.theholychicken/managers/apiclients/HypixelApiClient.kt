@@ -9,6 +9,8 @@ import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import java.io.IOException
+import kotlin.math.min
 
 /**
  * Client for managing Hypixel auctions API calls
@@ -28,37 +30,46 @@ object HypixelApiClient : ApiClient {
 
     override suspend fun fetchAllAuctions() = withContext(Dispatchers.IO) {
         SellableItemParser.auctionPrices.clear()
+
         // First parse auctions
+        val itemPrices: MutableMap<String, Double> = mutableMapOf()
         var currentPage = 0
         var totalPages: Int
         do {
             val response = fetchPage(currentPage)
             val jsonResponse = gson.fromJson(response, JsonObject::class.java)
 
-            // check for success
+            // Check for success
             if (!jsonResponse.get("success").asBoolean) {
                 modMessage("Failed to fetch ah data. Please manually try refreshing with /goodmod:dev:updateauctions")
-                throw Exception("Failed to fetch auctions")
+                throw IOException("Failed to fetch auctions")
             }
 
             totalPages = jsonResponse.get("totalPages").asInt
             val auctions = jsonResponse.getAsJsonArray("auctions")
 
-            // process auctions
+            // Process auctions
             for (auction in auctions) {
                 if (auction.asJsonObject.get("bin").asBoolean) {
                     val itemName = auction.asJsonObject.get("item_name").asString
                     val price = auction.asJsonObject.get("starting_bid").asDouble
-                    if (itemName == "[Lvl 1] Spirit") {
-                        SellableItemParser.updateAuction(itemName, price,
-                            auction.asJsonObject.get("tier").asString)
-                    } else {
-                        SellableItemParser.updateAuction(itemName, price)
-                    }
+                    itemPrices[itemName] = min(
+                        itemPrices.getOrDefault(itemName, Double.MAX_VALUE),
+                        price
+                    )
                 }
             }
             currentPage++
         } while (currentPage < totalPages)
+        itemPrices.forEach { (itemName, price) ->
+//            if (itemName == "[Lvl 1] Spirit") {
+//                SellableItemParser.updateAuction(itemName, price,
+//                    auction.asJsonObject.get("tier").asString)
+//            } else {
+            SellableItemParser.updateAuction(itemName, price)
+//            }
+        }
+
 
         // Now parse bazaar
         val bazaarResponse = fetchBazaar()

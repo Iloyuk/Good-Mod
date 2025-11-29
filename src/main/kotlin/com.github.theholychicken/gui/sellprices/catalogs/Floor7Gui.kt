@@ -1,14 +1,13 @@
 package com.github.theholychicken.gui.sellprices.catalogs
 
 import com.github.theholychicken.GoodMod
-import com.github.theholychicken.gui.utils.renderRows
 import com.github.theholychicken.managers.SellableItemParser
 import net.minecraft.client.gui.GuiButton
 
 class Floor7Gui : AbstractCatalogGui() {
     override val items: List<SellableItemParser.SellableItem> = SellableItemParser
         .SellableItem.entries.filter {
-            it.catalog == SellableItemParser.SellableItem.Catalog.FLOOR_1
+            it.catalog == SellableItemParser.SellableItem.Catalog.FLOOR_7
                     && it.sellType == SellableItemParser.SellableItem.SellType.BAZAAR
         }
     override val guiName = "Floor 7"

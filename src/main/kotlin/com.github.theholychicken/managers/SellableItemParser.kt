@@ -42,7 +42,7 @@ object SellableItemParser {
     // updates an entry as an auction thingy
     // TODO: make it account for listing fees and taxes
     fun updateAuction(item: String, price: Double, rarity: String = "") {
-        if (!isAuctionable(item) && item !in shinyItems) return
+        if (!(isAuctionable(item) || item in shinyItems)) return
 
         // Have to check for spirit pet rarity
         var itemName = item
@@ -102,9 +102,7 @@ object SellableItemParser {
      * Checks if this [item] is auctionable. Input is using the item's name.
      */
     private fun isAuctionable(item: String): Boolean {
-        return items
-            .filter { it.sellType == SellableItem.SellType.AUCTION }
-            .any { item == it.displayName }
+        return SellableItem.toItem(item)?.sellType == SellableItem.SellType.AUCTION
     }
 
     /**
@@ -122,23 +120,14 @@ object SellableItemParser {
     }
 
     private fun auctionPriceLogic(price: Double): Double {
-        // claim tax
+        // Claim tax
         var modifiedPrice: Double = price - (price * 0.01)
 
-        // listing tax
+        // Listing tax
         when {
-            price <= 9_999_999.0 -> {
-                //modMessage("price $price satisfies 1 <= $price <= 9,999,999")
-                modifiedPrice -= (price * 0.01)
-            }
-            price <= 99_999_999.0 -> {
-                //modMessage("price $price  satisfies 10,000,000 <= $price <= 99,999,999")
-                modifiedPrice -= (price * 0.02)
-            }
-            price >= 100_000_000 -> {
-                //modMessage("price $price satisfies 100,000,000 <= $price")
-                modifiedPrice -= (price * 0.025)
-            }
+            price <= 9_999_999.0 -> modifiedPrice -= (price * 0.01)
+            price <= 99_999_999.0 -> modifiedPrice -= (price * 0.02)
+            price >= 100_000_000 -> modifiedPrice -= (price * 0.025)
         }
 
         return modifiedPrice
@@ -149,7 +138,7 @@ object SellableItemParser {
      */
     enum class SellableItem(val displayName: String, val catalog: Catalog, val sellType: SellType) {
         // Floor 7 - Auctions
-        NECRON_HANDLE("Necron's Handle", Catalog.FLOOR_7,  SellType.AUCTION),
+        NECRON_HANDLE("Necron's Handle", Catalog.FLOOR_7, SellType.AUCTION),
         DARK_CLAYMORE("Dark Claymore", Catalog.FLOOR_7, SellType.AUCTION),
         DYE_NECRON("Necron Dye", Catalog.FLOOR_7, SellType.AUCTION),
         WITHER_HELMET("Wither Helmet", Catalog.FLOOR_7, SellType.AUCTION),
@@ -301,6 +290,10 @@ object SellableItemParser {
 
         companion object {
             private val displayMap: Map<String, SellableItem> = entries.associateBy { it.displayName }
+
+            fun toItem(displayName: String): SellableItem? {
+                return displayMap[displayName]
+            }
 
             fun toKey(displayName: String): String? {
                 val filteredName = displayName.substringAfterLast("§")

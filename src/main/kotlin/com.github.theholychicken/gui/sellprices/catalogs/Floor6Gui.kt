@@ -1,7 +1,6 @@
 package com.github.theholychicken.gui.sellprices.catalogs
 
 import com.github.theholychicken.GoodMod
-import com.github.theholychicken.gui.utils.renderRows
 import com.github.theholychicken.managers.SellableItemParser
 import net.minecraft.client.gui.GuiButton
 
