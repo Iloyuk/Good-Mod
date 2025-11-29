@@ -1,5 +1,6 @@
 package com.github.theholychicken.managers
 
+import com.github.theholychicken.utils.modMessage
 import net.minecraft.inventory.ContainerChest
 import net.minecraft.nbt.NBTTagString
 
@@ -27,9 +28,9 @@ object MainCroesusGuiParser {
             Unopened chests are marked with a 2
              */
             when {
-                chestInfo.getStringTagAt(completedIndex + 1) == "§aNo more Chests to open!" -> openedChests[display] = 0
-                chestInfo.getStringTagAt(completedIndex + 2) == "§8No Chests Opened!" -> openedChests[display] = 2
-                chestInfo.getStringTagAt(completedIndex + 2).matches(Regex("^§8Opened Chest: (Wood|Gold|Diamond|Emerald|Obsidian|Bedrock)$")) -> openedChests[display] = 1
+                chestInfo.getStringTagAt(completedIndex + 1) == "§aNo more chests to open!" -> openedChests[display] = 0
+                chestInfo.getStringTagAt(completedIndex + 2) == "§cNo chests opened yet!" -> openedChests[display] = 2
+                chestInfo.getStringTagAt(completedIndex + 2).matches(Regex("^§7Opened Chest: §[0-9a-fk-or].+")) -> openedChests[display] = 1
             }
         }
     }
