@@ -1,9 +1,8 @@
 package com.github.theholychicken.gui.utils
 
 import com.github.theholychicken.config.SellPricesConfig
-import com.github.theholychicken.utils.modMessage
+import com.github.theholychicken.managers.SellableItemParser
 import net.minecraft.client.gui.GuiButton
-import kotlin.math.max
 
 /**
  * Dynamically generates a list of toggleButtons for each item
@@ -11,14 +10,14 @@ import kotlin.math.max
  * Displays at most 5 buttons per row. If a row has fewer than 5 buttons, they are centered horizontally.
  * The entire grid is centered vertically and horizontally.
  *
- * @param items the list of items for which to create buttons
+ * @param itemList the list of items for which to create buttons
  * @param width the available width
  * @param height the available height
  * @return A list of GuiButtons (ToggleButtons) with buttonIds from 0 to items.size - 1
  */
-fun renderRows(itemMap: List<Pair<String, String>>, width: Int, height: Int, colorList: List<Int>): List<GuiButton> {
+fun renderRows(itemList: List<SellableItemParser.SellableItem>, width: Int, height: Int, colorList: List<Int>): List<GuiButton> {
     val buttons = mutableListOf<GuiButton>()
-    val items = itemMap.map { pair -> pair.second }
+    val items = itemList.map { it.displayName }
 
     val maxPerRow = 5
     val buttonWidth = 40
@@ -45,7 +44,7 @@ fun renderRows(itemMap: List<Pair<String, String>>, width: Int, height: Int, col
         for (col in 0 until itemsInRow) {
             val x = startX + col * (buttonWidth + spacingX)
             val y = startY + row * spacingY
-            val initialState = SellPricesConfig.sellPrices[itemMap[itemIndex].first] ?: false
+            val initialState = SellPricesConfig.sellPrices[itemList[itemIndex].displayName] ?: false
 
             buttons.add(ToggleButton(itemIndex, x, y, buttonWidth, buttonHeight, initialState, items[itemIndex], colorList[itemIndex]))
             itemIndex++

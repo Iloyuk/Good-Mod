@@ -1,34 +1,29 @@
-package com.github.theholychicken.gui.sellprices
-
-import com.github.theholychicken.GoodMod
+package com.github.theholychicken.gui.sellprices.catalogs
 import com.github.theholychicken.config.SellPricesConfig
+import com.github.theholychicken.gui.sellprices.ConfigSellPrices
 import com.github.theholychicken.gui.utils.ToggleButton
-import com.github.theholychicken.gui.utils.renderRows
-import com.github.theholychicken.managers.AuctionParser
+import com.github.theholychicken.managers.SellableItemParser
 import net.minecraft.client.gui.GuiButton
 import net.minecraft.client.gui.GuiScreen
 import org.lwjgl.input.Keyboard
 import java.io.IOException
-import kotlin.jvm.Throws
+import kotlin.collections.set
 
-class Floor5Gui : GuiScreen() {
-
+abstract class AbstractCatalogGui : GuiScreen() {
     // should contain itemNames, and the corresponding buttonId should be items.indexOf(itemName)
-    private val items: List<Pair<String, String>> = AuctionParser.items["floor_5"]?.get("bazaar")?.toList() ?: emptyList()
+    // what does this mean???? - ilo
+    abstract val items: List<SellableItemParser.SellableItem>
+    abstract val guiName: String
 
     override fun initGui() {
         super.initGui()
         buttonList.clear()
-
-        // init buttons here using util file
-        renderRows(items, width, height, listOf(0x5555FF, 0x5555FF, 0xAA00AA)).forEach { buttonList.add(it) }
-        buttonList.add(GuiButton(100, width - 103, 3, 100, 20, "Back"))
     }
 
     @Throws(IOException::class)
     override fun actionPerformed(button: GuiButton) {
         if (button is ToggleButton) {
-            SellPricesConfig.sellPrices[items[button.id].first] = !button.toggled
+            SellPricesConfig.sellPrices[items[button.id].name] = !button.toggled
         } else if (button.id == 100) {
             SellPricesConfig.saveConfig()
             mc.displayGuiScreen(ConfigSellPrices())
@@ -37,7 +32,7 @@ class Floor5Gui : GuiScreen() {
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
         drawDefaultBackground()
-        drawCenteredString(fontRendererObj, "§lFloor 5", width / 2, 20, 0x00FFFF)
+        drawCenteredString(fontRendererObj, guiName, width / 2, 20, 0x00FFFF)
         for (button in buttonList) {
             button.drawButton(mc, mouseX, mouseY)
         }
@@ -51,11 +46,4 @@ class Floor5Gui : GuiScreen() {
     }
 
     override fun doesGuiPauseGame(): Boolean = false
-
-    // allows gui to be opened with Floor5Gui.open()
-    companion object {
-        fun open() {
-            GoodMod.display = Floor5Gui()
-        }
-    }
 }

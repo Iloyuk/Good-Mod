@@ -2,31 +2,32 @@ package com.github.theholychicken.managers.apiclients
 
 import com.github.theholychicken.GoodMod
 import com.github.theholychicken.config.SellPricesConfig
-import com.github.theholychicken.managers.AuctionParser
+import com.github.theholychicken.managers.SellableItemParser
 import com.github.theholychicken.utils.modMessage
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
 /**
  * Client for managing Hypixel auctions API calls
  * @property fetchAllAuctions searches every auction and calls AuctionParser.updateAuction on each one if bin
  */
-object HypixelApiClient {
+object HypixelApiClient : ApiClient {
     private val gson = Gson()
     private var key = "owo" //getKey()
 
     private fun getKey(item: String): String {
-        if (SellPricesConfig.sellPrices[item] == true) {
-            return "buy_summary" // using sell offers
+        return if (SellPricesConfig.sellPrices[item] == true) {
+            "buy_summary" // using sell offers
         } else {
-            return "sell_summary" // using instasell
+            "sell_summary" // using instasell
         }
     }
 
-    suspend fun fetchAllAuctions(): Unit = withContext(Dispatchers.IO) {
-        AuctionParser.auctionPrices.clear()
+    override suspend fun fetchAllAuctions() = withContext(Dispatchers.IO) {
+        SellableItemParser.auctionPrices.clear()
         // First parse auctions
         var currentPage = 0
         var totalPages: Int
@@ -49,17 +50,15 @@ object HypixelApiClient {
                     val itemName = auction.asJsonObject.get("item_name").asString
                     val price = auction.asJsonObject.get("starting_bid").asDouble
                     if (itemName == "[Lvl 1] Spirit") {
-                        AuctionParser.updateAuction(itemName, price,
+                        SellableItemParser.updateAuction(itemName, price,
                             auction.asJsonObject.get("tier").asString)
                     } else {
-                        AuctionParser.updateAuction(itemName, price)
+                        SellableItemParser.updateAuction(itemName, price)
                     }
                 }
             }
-
             currentPage++
         } while (currentPage < totalPages)
-
 
         // Now parse bazaar
         val bazaarResponse = fetchBazaar()
@@ -82,13 +81,13 @@ object HypixelApiClient {
                     ?.asJsonObject
                     ?.get("pricePerUnit")
                     ?.asDouble ?: 0.00
-                AuctionParser.updateBazaar(itemName, price)
+                SellableItemParser.updateBazaar(itemName, price)
             } catch (_: Exception) {
                 modMessage("Failed to update price for bazaar item: $itemName")
             }
         }
 
-        AuctionParser.saveToFile()
+        SellableItemParser.saveToFile()
         modMessage("Fetched updated auction prices.")
         GoodMod.logger.info("Fetched updated auction prices.")
     }
